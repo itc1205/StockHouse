@@ -1,0 +1,84 @@
+package com.itc.StockHouse.controller;
+
+import com.itc.StockHouse.dto.CreateStockDto;
+import com.itc.StockHouse.dto.StockDto;
+import com.itc.StockHouse.dto.UpdateStockDto;
+import com.itc.StockHouse.exceptions.StockVendorCodeAlreadyExistsException;
+import com.itc.StockHouse.exceptions.StockNotFoundException;
+import com.itc.StockHouse.service.StockService;
+import com.itc.StockHouse.utils.StockMappingUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.Min;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+/**
+ * Rest-контроллер для сервиса по управлению товарами на складе
+ *
+ * <p> Основная задача контроллера - маппинг сервиса {@link StockService} к соответствующим конечным точкам приложения</p>
+ */
+@RestController
+@RequestMapping("/api/v1/stock")
+public class StockController {
+    @Autowired
+    private StockService stockService;
+
+    @Autowired
+    private StockMappingUtils utils;
+
+    @Operation(summary = "Операция создания товара на складе")
+    @PostMapping("/")
+    public StockDto createStock(@RequestBody @Validated CreateStockDto createStockDto) throws StockVendorCodeAlreadyExistsException {
+        return utils.mapToStockDto(
+                stockService.createStock(
+                        utils.mapToStockEntity(createStockDto)
+                )
+        );
+    }
+
+    @Operation(summary = "Операция получения информации о товаре на складе")
+    @GetMapping("/{uuid}")
+    public StockDto getStockByUUID(@PathVariable("uuid") UUID uuid) throws StockNotFoundException {
+        return utils.mapToStockDto(
+                stockService.getStockByUUID(uuid)
+        );
+    }
+
+    @Operation(summary = "Операция получения всех товаров на складе")
+    @GetMapping("/")
+    public List<StockDto> getAllStocks() {
+        return stockService.getAll()
+                .stream()
+                .map(utils::mapToStockDto)
+                .collect(Collectors.toList());
+    }
+
+    @Operation(summary = "Операция обновления товара на складе")
+    @PutMapping("/")
+    public StockDto updateStock(@RequestBody @Validated UpdateStockDto stockDto) throws StockVendorCodeAlreadyExistsException, StockNotFoundException {
+        return utils.mapToStockDto(
+                stockService.updateStock(
+                        utils.mapToStockEntity(stockDto)
+                )
+        );
+    }
+
+    @Operation(summary = "Операция обновления количества товара на складе")
+    @PatchMapping("/{uuid}")
+    public StockDto updateStockAmount(@PathVariable("uuid") UUID uuid, @RequestParam("amount") @Min(1) Integer amount) {
+        return utils.mapToStockDto(
+                stockService.updateAmountOfStock(uuid, amount)
+        );
+    }
+
+    @Operation(summary = "Операция удаления товара на складе")
+    @DeleteMapping("/{uuid}")
+    public void deleteStockByUUID(@PathVariable("uuid") UUID uuid) throws StockNotFoundException {
+        stockService.deleteStockByUUID(uuid);
+    }
+}
