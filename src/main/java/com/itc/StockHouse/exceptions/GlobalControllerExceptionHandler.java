@@ -1,5 +1,7 @@
 package com.itc.StockHouse.exceptions;
 
+import com.itc.StockHouse.dto.ErrorDTO;
+import com.itc.StockHouse.dto.ValidationErrorDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -8,8 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -24,16 +28,22 @@ public class GlobalControllerExceptionHandler {
      */
     @ExceptionHandler(StockVendorCodeAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<?> handleArticleConflict(StockVendorCodeAlreadyExistsException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    public ErrorDTO handleArticleConflict(StockVendorCodeAlreadyExistsException ex) {
+        return ErrorDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .error(ex.getMessage())
+                .build();
     }
     /**
      * Обработчик исключений {@link com.itc.StockHouse.exceptions.StockNotFoundException}
      */
     @ExceptionHandler(StockNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<?> handleStockNotFound(StockNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ErrorDTO NotFound(StockNotFoundException ex) {
+        return ErrorDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .error(ex.getMessage())
+                .build();
     }
     /**
      * Обработчик исключений ошибок валидации
@@ -41,14 +51,19 @@ public class GlobalControllerExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public ValidationErrorDTO handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
+
+        // Collect all validation errors
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return errors;
+        // Convert them into DTO
+        return ValidationErrorDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .validationErrors(errors)
+                .build();
     }
 }

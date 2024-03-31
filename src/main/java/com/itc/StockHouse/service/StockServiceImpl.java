@@ -25,14 +25,18 @@ public class StockServiceImpl implements StockService {
     public StockEntity createStock(@NotNull StockEntity stock) throws StockVendorCodeAlreadyExistsException {
         Optional<StockEntity> stockEntity = repository.findByVendorCode(stock.getVendorCode());
         if (stockEntity.isPresent()) {
-            throw new StockVendorCodeAlreadyExistsException();
+            throw new StockVendorCodeAlreadyExistsException(
+                    "Товар с артикулом %s уже есть в базе данных".formatted(stock.getVendorCode())
+            );
         }
         return repository.save(stock);
     }
 
     @Override
     public StockEntity getStockByUUID(UUID uuid) throws StockNotFoundException {
-        return repository.findById(uuid).orElseThrow(StockNotFoundException::new);
+        return repository.findById(uuid).orElseThrow(
+                () -> new StockNotFoundException("Товар с UUID %s не найден!".formatted(uuid))
+        );
     }
 
     @Override
@@ -42,34 +46,46 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public StockEntity updateStock(@NotNull StockEntity stock) throws StockNotFoundException, StockVendorCodeAlreadyExistsException {
-        StockEntity stockEntity = repository.findById(stock.getUuid()).orElseThrow(StockNotFoundException::new);
+        StockEntity stockEntity = repository.findById(stock.getUuid()).orElseThrow(
+                () -> new StockNotFoundException("Товар с UUID %s не найден!".formatted(stock.getUuid()))
+        );
 
-        // Если у обновляемого объекта внезапно поменялся артикул
+        // Если у обновляемого объекта поменялся артикул
         if (!stockEntity.getVendorCode().equals(stock.getVendorCode())) {
             // И если в базе данных уже существует запись с таким артикулом
             if (repository.findByVendorCode(stock.getVendorCode()).isPresent()) {
-                throw new StockVendorCodeAlreadyExistsException();
+                throw new StockVendorCodeAlreadyExistsException(
+                        "Товар с артикулом %s уже есть в базе данных".formatted(stock.getVendorCode())
+                );
             }
         }
+
+        // BUG: По непонятной причине, поле creationDate имеет значение null
+        // ДАЖЕ если мы после сохранения заново пытаемся получить значение товара из базы данных в новую переменную
+        // И ДАЖЕ если мы сохраняем с помощью .saveAndFlush(); и повторяем шаг сверху
+        // скорее всего причина в том, что creationDate полностью исключается из запросов UPDATE Hibernate'ом,
+        // а затем еще и кешируется
+
+        // Небольшой воркараунд - просто ставим дату создания из прошлой энтити
+        stock.setCreationDate(stockEntity.getCreationDate());
 
         return repository.save(stock);
     }
 
     @Override
     public StockEntity updateAmountOfStock(UUID uuid, Integer stockAmount) throws StockNotFoundException {
-        StockEntity stockEntity = repository.findById(uuid).orElseThrow(StockNotFoundException::new);
+        StockEntity stockEntity = repository.findById(uuid).orElseThrow(
+                () -> new StockNotFoundException("Товар с UUID %s не найден!".formatted(uuid))
+        );
         stockEntity.setAmount(stockAmount);
-        stockEntity.setUpdateDate(OffsetDateTime.now());
         return repository.save(stockEntity);
     }
 
     @Override
     public void deleteStockByUUID(UUID uuid) throws StockNotFoundException {
-        Optional<StockEntity> stockEntity = repository.findById(uuid);
-        if (stockEntity.isEmpty()) {
-            throw new StockNotFoundException();
-        }
-        repository.delete(stockEntity.get());
+        StockEntity stockEntity = repository.findById(uuid).orElseThrow(
+                () -> new StockNotFoundException("Товар с UUID %s не найден!".formatted(uuid))
+        );
+        repository.delete(stockEntity);
     }
 }
-

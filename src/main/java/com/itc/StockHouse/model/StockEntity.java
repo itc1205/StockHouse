@@ -17,9 +17,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "STOCKS_DB")
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class StockEntity {
     /**
      * Уникальный идентификатор товара
@@ -61,7 +61,7 @@ public class StockEntity {
      * Время и дата обновления товара
      */
     @Column(name = "update_date", nullable = false)
-    @CreationTimestamp
+    @UpdateTimestamp
     private OffsetDateTime updateDate;
     /**
      * Время и дата создания товара

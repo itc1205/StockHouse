@@ -1,6 +1,7 @@
 package com.itc.StockHouse.controller;
 
 import com.itc.StockHouse.dto.CreateStockDto;
+import com.itc.StockHouse.dto.PatchAmountStockDTO;
 import com.itc.StockHouse.dto.StockDto;
 import com.itc.StockHouse.dto.UpdateStockDto;
 import com.itc.StockHouse.exceptions.StockVendorCodeAlreadyExistsException;
@@ -8,7 +9,9 @@ import com.itc.StockHouse.exceptions.StockNotFoundException;
 import com.itc.StockHouse.service.StockService;
 import com.itc.StockHouse.utils.StockMappingUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
  * <p> Основная задача контроллера - маппинг сервиса {@link StockService} к соответствующим конечным точкам приложения</p>
  */
 @RestController
+@Validated
 @RequestMapping("/api/v1/stock")
 public class StockController {
     @Autowired
@@ -33,7 +37,7 @@ public class StockController {
 
     @Operation(summary = "Операция создания товара на складе")
     @PostMapping("/")
-    public StockDto createStock(@RequestBody @Validated CreateStockDto createStockDto) throws StockVendorCodeAlreadyExistsException {
+    public StockDto createStock(@RequestBody CreateStockDto createStockDto) throws StockVendorCodeAlreadyExistsException {
         return utils.mapToStockDto(
                 stockService.createStock(
                         utils.mapToStockEntity(createStockDto)
@@ -60,7 +64,7 @@ public class StockController {
 
     @Operation(summary = "Операция обновления товара на складе")
     @PutMapping("/")
-    public StockDto updateStock(@RequestBody @Validated UpdateStockDto stockDto) throws StockVendorCodeAlreadyExistsException, StockNotFoundException {
+    public StockDto updateStock(@RequestBody UpdateStockDto stockDto) throws StockVendorCodeAlreadyExistsException, StockNotFoundException {
         return utils.mapToStockDto(
                 stockService.updateStock(
                         utils.mapToStockEntity(stockDto)
@@ -70,9 +74,10 @@ public class StockController {
 
     @Operation(summary = "Операция обновления количества товара на складе")
     @PatchMapping("/{uuid}")
-    public StockDto updateStockAmount(@PathVariable("uuid") UUID uuid, @RequestParam("amount") @Min(1) Integer amount) {
+    public StockDto updateStockAmount(@PathVariable("uuid") UUID uuid,
+                                      @RequestBody PatchAmountStockDTO amountStockDTO) {
         return utils.mapToStockDto(
-                stockService.updateAmountOfStock(uuid, amount)
+                stockService.updateAmountOfStock(uuid, amountStockDTO.getAmount())
         );
     }
 

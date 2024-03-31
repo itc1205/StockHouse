@@ -1,5 +1,6 @@
 package com.itc.StockHouse.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -11,6 +12,7 @@ import java.util.UUID;
  * DTO-объект используемый для передачи информации о товаре клиенту
  */
 @Data
+@Builder
 public class StockDto {
     /**
      * Уникальный идентификатор товара

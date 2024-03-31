@@ -1,7 +1,6 @@
 package com.itc.StockHouse.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -27,13 +26,14 @@ public class UpdateStockDto {
     /**
      * Цена товара
      */
-    @NotBlank(message = "Цена не может быть пустой")
-    @Min(value = 1, message = "Цена может быть выше нуля")
+    @NotNull(message = "Цена товаров не может быть пустой")
+    @Digits(integer = 20, fraction = 2, message = "Неправильный формат цены")
+    @DecimalMin(value = "0", message = "Цена не может быть ниже нуля")
     private BigDecimal price;
     /**
      * Количество товара
      */
-    @NotBlank(message = "Количество товаров не может быть пустым")
+    @NotNull(message = "Количество товаров не может быть пустым")
     @Min(value = 0, message = "Количество товаров не может быть ниже нуля")
     private Integer amount;
     /**

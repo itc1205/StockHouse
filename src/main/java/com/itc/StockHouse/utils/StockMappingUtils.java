@@ -19,40 +19,17 @@ public class StockMappingUtils {
      * @return DTO объект, замапленный от Entity
      */
     public StockDto mapToStockDto(@NotNull StockEntity stockEntity) {
-        StockDto stockDto = new StockDto();
-
-        stockDto.setUuid(stockEntity.getUuid());
-        stockDto.setCategory(stockEntity.getCategory());
-        stockDto.setName(stockEntity.getName());
-        stockDto.setVendorCode(stockEntity.getVendorCode());
-        stockDto.setDescription(stockEntity.getDescription());
-        stockDto.setCreationDate(stockEntity.getCreationDate());
-        stockDto.setUpdateDate(stockEntity.getUpdateDate());
-        stockDto.setPrice(stockEntity.getPrice());
-        stockDto.setAmount(stockEntity.getAmount());
-        return stockDto;
-    }
-
-    /**
-     * Метод для маппинга DTO объекта к Entity
-     *
-     * @param stockDto DTO-объект для маппинга к Entity
-     * @return Entity объект, замапленный от DTO
-     */
-    public StockEntity mapToStockEntity(@NotNull StockDto stockDto) {
-        StockEntity stockEntity = new StockEntity();
-
-        stockEntity.setUuid(stockDto.getUuid());
-        stockEntity.setCategory(stockDto.getCategory());
-        stockEntity.setName(stockDto.getName());
-        stockEntity.setVendorCode(stockDto.getVendorCode());
-        stockEntity.setDescription(stockDto.getDescription());
-        stockEntity.setCreationDate(stockDto.getCreationDate());
-        stockEntity.setUpdateDate(stockDto.getUpdateDate());
-        stockEntity.setPrice(stockDto.getPrice());
-        stockEntity.setAmount(stockDto.getAmount());
-
-        return stockEntity;
+        return StockDto.builder()
+                .uuid(stockEntity.getUuid())
+                .category(stockEntity.getCategory())
+                .name(stockEntity.getName())
+                .vendorCode(stockEntity.getVendorCode())
+                .description(stockEntity.getDescription())
+                .creationDate(stockEntity.getCreationDate())
+                .updateDate(stockEntity.getUpdateDate())
+                .price(stockEntity.getPrice())
+                .amount(stockEntity.getAmount())
+                .build();
     }
 
     /**
@@ -62,16 +39,14 @@ public class StockMappingUtils {
      * @return Entity объект, замапленный от DTO
      */
     public StockEntity mapToStockEntity(@NotNull CreateStockDto stockDto) {
-        StockEntity stockEntity = new StockEntity();
-
-        stockEntity.setCategory(stockDto.getCategory());
-        stockEntity.setName(stockDto.getName());
-        stockEntity.setVendorCode(stockDto.getVendorCode());
-        stockEntity.setDescription(stockDto.getDescription());
-        stockEntity.setPrice(stockDto.getPrice());
-        stockEntity.setAmount(stockDto.getAmount());
-
-        return stockEntity;
+        return StockEntity.builder()
+                .category(stockDto.getCategory())
+                .name(stockDto.getName())
+                .vendorCode(stockDto.getVendorCode())
+                .description(stockDto.getDescription())
+                .price(stockDto.getPrice())
+                .amount(stockDto.getAmount())
+                .build();
     }
 
     /**
@@ -81,16 +56,14 @@ public class StockMappingUtils {
      * @return Entity объект, замапленный от DTO
      */
     public StockEntity mapToStockEntity(@NotNull UpdateStockDto stockDto) {
-        StockEntity stockEntity = new StockEntity();
-
-        stockEntity.setUuid(stockDto.getUuid());
-        stockEntity.setCategory(stockDto.getCategory());
-        stockEntity.setName(stockDto.getName());
-        stockEntity.setVendorCode(stockDto.getVendorCode());
-        stockEntity.setDescription(stockDto.getDescription());
-        stockEntity.setPrice(stockDto.getPrice());
-        stockEntity.setAmount(stockDto.getAmount());
-
-        return stockEntity;
+        return StockEntity.builder()
+                .uuid(stockDto.getUuid())
+                .category(stockDto.getCategory())
+                .name(stockDto.getName())
+                .vendorCode(stockDto.getVendorCode())
+                .description(stockDto.getDescription())
+                .price(stockDto.getPrice())
+                .amount(stockDto.getAmount())
+                .build();
     }
 }
