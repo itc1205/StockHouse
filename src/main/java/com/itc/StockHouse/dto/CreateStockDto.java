@@ -4,7 +4,6 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 
 /**
  * DTO-объект содержащий необходимую информацию для создания товара на складе
