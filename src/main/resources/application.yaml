@@ -8,3 +8,9 @@ spring:
 springdoc:
   api-docs:
     path: "/api-docs"
+
+app:
+  scheduling:
+    enabled: true
+    optimization: false
+    rate: 1000 #ms
