@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: "StockHouse"
+  profiles:
+    active: @spring.profiles.active@
+
+springdoc:
+  api-docs:
+    path: "/api-docs"
