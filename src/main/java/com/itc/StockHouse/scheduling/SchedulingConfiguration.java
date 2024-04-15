@@ -1,25 +1,25 @@
-package com.itc.StockHouse;
+package com.itc.StockHouse.scheduling;
 
-import com.itc.StockHouse.scheduling.DefaultScheduler;
-import com.itc.StockHouse.scheduling.OptimisedScheduler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-public class StockHouseConfiguration {
+@EnableScheduling
+public class SchedulingConfiguration {
     @Bean
-    @Profile("dev")
+    @Profile("prod")
     @ConditionalOnExpression("${app.scheduling.enabled:false} and ${app.scheduling.optimization:false} == false")
-    public DefaultScheduler defaultSchedule() {
-        return new DefaultScheduler();
+    public DefaultProductPriceScheduler defaultSchedule() {
+        return new DefaultProductPriceScheduler();
     }
 
     @Bean
-    @Profile("dev")
+    @Profile("prod")
     @ConditionalOnExpression("${app.scheduling.enabled:false} and ${app.scheduling.optimization:false}")
-    public OptimisedScheduler optimisedSchedule() {
-        return new OptimisedScheduler();
+    public OptimisedProductPriceBatchScheduler optimisedSchedule() {
+        return new OptimisedProductPriceBatchScheduler();
     }
 }
