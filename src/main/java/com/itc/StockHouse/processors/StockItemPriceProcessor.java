@@ -6,12 +6,21 @@ import org.springframework.batch.item.ItemProcessor;
 import java.math.BigDecimal;
 
 
+/**
+ * Обработчик который занимается повышением цены у StockEntity на priceIncreasePercentage
+ */
 public class StockItemPriceProcessor implements ItemProcessor<StockEntity, StockEntity> {
 
+    /**
+     * @param priceIncreasePercentage Процент увеличения цены
+     */
     public StockItemPriceProcessor(Double priceIncreasePercentage) {
         this.priceIncreasePercentage = priceIncreasePercentage;
     }
 
+    /**
+     * Процент увеличения цены
+     */
     private final Double priceIncreasePercentage;
 
     @Override
