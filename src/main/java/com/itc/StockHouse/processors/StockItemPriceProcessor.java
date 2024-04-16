@@ -28,7 +28,7 @@ public class StockItemPriceProcessor implements ItemProcessor<StockEntity, Stock
     public StockEntity process(final StockEntity stockEntity) {
         BigDecimal newPrice = stockEntity
                 .getPrice()
-                .multiply(priceIncreasePercentage.divide(BigDecimal.valueOf(100), RoundingMode.UNNECESSARY))
+                .multiply(priceIncreasePercentage.divide(BigDecimal.valueOf(100), RoundingMode.CEILING))
                 .add(stockEntity.getPrice());
         stockEntity.setPrice(newPrice);
         return stockEntity;
