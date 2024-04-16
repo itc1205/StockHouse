@@ -85,7 +85,7 @@ public class BatchConfiguration {
      * Метод конфигурирующий ItemProcessor процессора для обработки StockEntity
      */
     @Bean
-    public ItemProcessor<StockEntity, StockEntity> processor() {
+    public ItemProcessor<StockEntity, StockEntity> priceProcessor() {
         return new StockItemPriceProcessor(priceIncreasePercentage);
     }
 
@@ -93,7 +93,7 @@ public class BatchConfiguration {
      * Метод конфигурирующий JdbcCursorItemReader для чтения записей StockEntity из базы данных
      */
     @Bean
-    public JdbcCursorItemReader<StockEntity> reader() {
+    public JdbcCursorItemReader<StockEntity> jdbcReader() {
         return new JdbcCursorItemReaderBuilder<StockEntity>()
                 .name("databaseStocksItemReader")
                 .sql("SELECT * FROM STOCKS_DB")
@@ -118,7 +118,7 @@ public class BatchConfiguration {
      * Метод конфигурирующий CompositeItemWriter для одновременной записи изменений StockEntity в файл и базу данных
      */
     @Bean
-    public CompositeItemWriter<StockEntity> databaseAndFileWriter() {
+    public CompositeItemWriter<StockEntity> jdbcAndFileWriter() {
         CompositeItemWriter<StockEntity> writer = new CompositeItemWriter<>();
         writer.setDelegates(Arrays.asList(jdbcWriter(), fileWriter()));
         return writer;
@@ -131,9 +131,9 @@ public class BatchConfiguration {
     public Step step1(JobRepository jobRepository, JpaTransactionManager transactionManager) {
         return new StepBuilder("step1", jobRepository)
                 .<StockEntity, StockEntity>chunk(10000, transactionManager)
-                .reader(reader())
-                .processor(processor())
-                .writer(databaseAndFileWriter())
+                .reader(jdbcReader())
+                .processor(priceProcessor())
+                .writer(jdbcAndFileWriter())
                 .build();
     }
 
