@@ -41,8 +41,8 @@ public class BatchConfiguration {
     /**
      * Процент увеличения цены
      */
-    @Value("${app.priceIncreasePercentage}")
-    private Double priceIncreasePercentage;
+    @Value("#{new java.math.BigDecimal(\"${app.priceIncreasePercentage:10}\")}")
+    private BigDecimal priceIncreasePercentage;
 
     @Autowired
     DataSource dataSource;

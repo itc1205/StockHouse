@@ -4,6 +4,7 @@ import com.itc.StockHouse.model.StockEntity;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 
 /**
@@ -14,20 +15,20 @@ public class StockItemPriceProcessor implements ItemProcessor<StockEntity, Stock
     /**
      * @param priceIncreasePercentage Процент увеличения цены
      */
-    public StockItemPriceProcessor(Double priceIncreasePercentage) {
+    public StockItemPriceProcessor(BigDecimal priceIncreasePercentage) {
         this.priceIncreasePercentage = priceIncreasePercentage;
     }
 
     /**
      * Процент увеличения цены
      */
-    private final Double priceIncreasePercentage;
+    private final BigDecimal priceIncreasePercentage;
 
     @Override
     public StockEntity process(final StockEntity stockEntity) {
         BigDecimal newPrice = stockEntity
                 .getPrice()
-                .multiply(BigDecimal.valueOf(priceIncreasePercentage / 100))
+                .multiply(priceIncreasePercentage.divide(BigDecimal.valueOf(100), RoundingMode.UNNECESSARY))
                 .add(stockEntity.getPrice());
         stockEntity.setPrice(newPrice);
         return stockEntity;
