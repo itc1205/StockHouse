@@ -3,6 +3,7 @@ package com.itc.StockHouse.support;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.stereotype.Component;
 
 /**
  * Аспект для измерения времени выполнения метода
@@ -11,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
  * </p>
  */
 @Aspect
+@Component
 public class LogMethodExecutionAspect {
     @Around("@annotation(LogMethodExecutionTime)")
     public Object logMethodExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
