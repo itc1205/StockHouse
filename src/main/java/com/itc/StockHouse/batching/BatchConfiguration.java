@@ -25,6 +25,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 /**
