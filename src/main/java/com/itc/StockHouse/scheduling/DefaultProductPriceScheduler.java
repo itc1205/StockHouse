@@ -11,6 +11,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * Дефолтный шедулер изменения цены
+ *
+ * <p>
+ *     Не рекомендуется к включению, так как на большом количестве записей будет потреблять большое кол-во ОЗУ
+ * </p>
+ *
+ * <p>
+ *     Под капотом использует StreamAPI и фетчит !все! записи из базы данных
+ * </p>
+ *
+ * @deprecated use {@link OptimisedProductPriceBatchScheduler} instead
+ */
 public class DefaultProductPriceScheduler {
 
     @Autowired
