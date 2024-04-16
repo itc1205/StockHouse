@@ -6,7 +6,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
 @Aspect
-@Component
 public class LogMethodExecutionAspect {
     @Around("@annotation(LogMethodExecutionTime)")
     public Object logMethodExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
