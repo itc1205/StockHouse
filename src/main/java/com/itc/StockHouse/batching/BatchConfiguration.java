@@ -27,17 +27,29 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import javax.sql.DataSource;
 import java.util.Arrays;
 
+/**
+ * Конфигурационный файл для работы с Spring Batch
+ */
 @Configuration
 public class BatchConfiguration {
+    /**
+     * Путь до файла в который нужно будет записывать изменения
+     */
     @Value("${app.output_file}")
     private String fileOutput;
 
+    /**
+     * Процент увеличения цены
+     */
     @Value("${app.priceIncreasePercentage}")
     private Double priceIncreasePercentage;
 
     @Autowired
     DataSource dataSource;
 
+    /**
+     * Метод конфигурирующий FlatFileItemWriter для записи изменений StockEntity в файл
+     */
     @Bean
     public FlatFileItemWriter<StockEntity> fileWriter() {
         BeanWrapperFieldExtractor<StockEntity> fieldExtractor = new BeanWrapperFieldExtractor<>();
@@ -69,11 +81,17 @@ public class BatchConfiguration {
                 .build();
     }
 
+    /**
+     * Метод конфигурирующий ItemProcessor процессора для обработки StockEntity
+     */
     @Bean
     public ItemProcessor<StockEntity, StockEntity> processor() {
         return new StockItemPriceProcessor(priceIncreasePercentage);
     }
 
+    /**
+     * Метод конфигурирующий JdbcCursorItemReader для чтения записей StockEntity из базы данных
+     */
     @Bean
     public JdbcCursorItemReader<StockEntity> reader() {
         return new JdbcCursorItemReaderBuilder<StockEntity>()
@@ -84,17 +102,21 @@ public class BatchConfiguration {
                 .build();
     }
 
+    /**
+     * Метод конфигурирующий JdbcBatchItemWriter для записи изменений в цене у StockEntity в базу данных
+     */
     @Bean
     public JdbcBatchItemWriter<StockEntity> jdbcWriter() {
         return new JdbcBatchItemWriterBuilder<StockEntity>()
-                .sql(
-                        "UPDATE STOCKS_DB SET price=:price WHERE uuid=:uuid"
-                )
+                .sql("UPDATE STOCKS_DB SET price=:price WHERE uuid=:uuid")
                 .beanMapped()
                 .dataSource(dataSource)
                 .build();
     }
 
+    /**
+     * Метод конфигурирующий CompositeItemWriter для одновременной записи изменений StockEntity в файл и базу данных
+     */
     @Bean
     public CompositeItemWriter<StockEntity> databaseAndFileWriter() {
         CompositeItemWriter<StockEntity> writer = new CompositeItemWriter<>();
@@ -102,6 +124,9 @@ public class BatchConfiguration {
         return writer;
     }
 
+    /**
+     * Метод конфигурирующий Step для чтения->обработки цены->записи изменений в файл и базу данных
+     */
     @Bean
     public Step step1(JobRepository jobRepository, JpaTransactionManager transactionManager) {
         return new StepBuilder("step1", jobRepository)
@@ -112,6 +137,9 @@ public class BatchConfiguration {
                 .build();
     }
 
+    /**
+     * Метод конфигурирующий Job для создания задачи обновления цены
+     */
     @Bean
     public Job priceUpdateJob(JobRepository jobRepository, Step step1) {
         return new JobBuilder("priceUpdateJob", jobRepository)
