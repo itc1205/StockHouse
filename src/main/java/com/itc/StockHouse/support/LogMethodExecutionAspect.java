@@ -5,6 +5,12 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+/**
+ * Аспект для измерения времени выполнения метода
+ * <p>
+ *     Вешается на аннотации {@link LogMethodExecutionTime}
+ * </p>
+ */
 @Aspect
 public class LogMethodExecutionAspect {
     @Around("@annotation(LogMethodExecutionTime)")
