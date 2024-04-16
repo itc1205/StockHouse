@@ -10,6 +10,22 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/**
+ * Оптимизированный шедулер обновления цены
+ *
+ * <p>
+ *     При работе также записывает все измененные записи в файл app.output_file указанный в application.yaml
+ * </p>
+ *
+ * <p>
+ *     Под капотом постоянно перезапускает задачу из {@link com.itc.StockHouse.batching.BatchConfiguration}
+ *     через время app.scheduling.rate указанное в application.yaml
+ * </p>
+ * <p>
+ *     За счет батчинга потребляет меньше и отрабатывает быстрее чем
+ *     {@link com.itc.StockHouse.scheduling.DefaultProductPriceScheduler}
+ * </p>
+ */
 public class OptimisedProductPriceBatchScheduler {
 
     @Autowired
@@ -18,6 +34,11 @@ public class OptimisedProductPriceBatchScheduler {
     @Autowired
     private Job priceUpdateJob;
 
+    /**
+     * Метод запуска задачи
+     *
+     * @throws Exception
+     */
     @Scheduled(fixedDelayString = "${app.scheduling.rate}")
     public void runScheduledTask() throws Exception {
         JobExecution jobExecution = jobLauncher.run(priceUpdateJob,
