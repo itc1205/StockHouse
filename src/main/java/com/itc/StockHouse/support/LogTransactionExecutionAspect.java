@@ -7,8 +7,18 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 
+/**
+ * Аспект для измерения времени выполнения транзакции
+ *
+ * <p>
+ *     Вешается на {@link org.springframework.transaction.annotation.Transactional}
+ * </p>
+ *
+ * <p>
+ *     Результат времени выполнения выведется в stdout
+ * </p>
+ */
 @Aspect
-@Component
 public class LogTransactionExecutionAspect implements TransactionSynchronization {
     @Before("@annotation(org.springframework.transaction.annotation.Transactional)")
     public void logExecutionTime() {
