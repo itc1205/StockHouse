@@ -1,9 +1,11 @@
 package com.itc.StockHouse.scheduling;
 
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParametersBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -32,6 +34,15 @@ public class OptimisedProductPriceBatchScheduler {
     private JobLauncher jobLauncher;
 
     @Autowired
+    private JobExplorer jobExplorer;
+
+    @Autowired
+    private JobRepository jobRepository;
+
+    @Autowired
+    private JobOperator jobOperator;
+
+    @Autowired
     private Job priceUpdateJob;
 
     /**
@@ -39,10 +50,85 @@ public class OptimisedProductPriceBatchScheduler {
      */
     @Scheduled(fixedDelayString = "${app.scheduling.rate}")
     public void runScheduledTask() throws Exception {
-        JobExecution jobExecution = jobLauncher.run(priceUpdateJob,
+
+        // Проверяем если последний JobExecution упал
+        if (checkIfLastExecutionRequiresRestart(priceUpdateJob)) {
+            restartLastJob(priceUpdateJob);
+            return;
+        }
+
+        jobLauncher.run(priceUpdateJob,
                 new JobParametersBuilder()
                         .addLocalDateTime("startDateTime", LocalDateTime.now())
                         .addString("uuid", UUID.randomUUID().toString(), true)
                         .toJobParameters());
+    }
+
+    /**
+     * Метод, проверяющий необходимость перезапуска последнего выполнения таска.
+     *
+     * <p>
+     *     В этих условиях будет возвращено true:
+     *     <li>
+     *          Если выполнение таска "потеряно". Такое происходит когда приложение завершилось до конца выполнения таска
+     *     </li>
+     *     <li>
+     *         Если таск завершился с статусом FAILED
+     *     </li>
+     * </p>
+     *
+     * @param job Работа, которую требуется проверить
+     * @return Нужен ли перезапуск или нет
+     */
+    private boolean checkIfLastExecutionRequiresRestart(@NotNull Job job) {
+        JobInstance instance = jobExplorer.getLastJobInstance(job.getName());
+        if (instance == null) {
+            return false;
+        }
+        JobExecution execution = jobExplorer.getLastJobExecution(instance);
+
+        if (execution == null) {
+            return false;
+        }
+
+        return execution.getExitStatus().equals(ExitStatus.EXECUTING)
+                || execution.getExitStatus().equals(ExitStatus.FAILED)
+                || execution.getExitStatus().equals(ExitStatus.UNKNOWN);
+    }
+
+
+    /**
+     * Метод для перезапуска таска
+     *
+     * <p>
+     *     В процессе выполнения ставит таску статус FAILED и затем перезапускает его
+     * </p>
+     *
+     * @param job Таск которому необходим перезапуск
+     * @throws Exception Исключение выбрасываемое таском
+     */
+    private void restartLastJob(Job job) throws Exception {
+        JobInstance instance = jobExplorer.getLastJobInstance(job.getName());
+        if (instance == null) {
+            return;
+        }
+
+        JobExecution execution = jobExplorer.getLastJobExecution(instance);
+        if (execution == null) {
+            return;
+        }
+        // Сброс состояния выполнения таска
+        execution.setStatus(BatchStatus.FAILED);
+        execution.setExitStatus(ExitStatus.FAILED);
+        for (StepExecution stepExecution: execution.getStepExecutions()) {
+            if (stepExecution.getStatus() == BatchStatus.STARTED) {
+                stepExecution.setStatus(BatchStatus.FAILED);
+                stepExecution.setExitStatus(ExitStatus.FAILED);
+            }
+            jobRepository.update(stepExecution);
+        }
+        jobRepository.update(execution);
+        // Перезапускаем таску
+        jobOperator.restart(execution.getId());
     }
 }
