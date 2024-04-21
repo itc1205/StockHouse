@@ -28,10 +28,10 @@ import java.util.List;
  *
  * @deprecated use {@link OptimisedProductPriceBatchScheduler} instead
  */
+@Slf4j
 @AllArgsConstructor
 public class DefaultProductPriceScheduler {
 
-    private static final Logger log = LoggerFactory.getLogger(DefaultProductPriceScheduler.class);
     private StockRepository repository;
 
     @Value("${app.priceIncreasePercentage}")
