@@ -46,8 +46,6 @@ public class BatchConfiguration {
     @Value("#{new java.math.BigDecimal(\"${app.priceIncreasePercentage:10}\")}")
     private BigDecimal priceIncreasePercentage;
 
-    @Autowired
-    DataSource dataSource;
 
     /**
      * Метод конфигурирующий FlatFileItemWriter для записи изменений StockEntity в файл
@@ -95,7 +93,7 @@ public class BatchConfiguration {
      * Метод конфигурирующий JdbcCursorItemReader для чтения записей StockEntity из базы данных
      */
     @Bean
-    public JdbcCursorItemReader<StockEntity> jdbcReader() {
+    public JdbcCursorItemReader<StockEntity> jdbcReader(DataSource dataSource) {
         return new JdbcCursorItemReaderBuilder<StockEntity>()
                 .name("databaseStocksItemReader")
                 .sql("SELECT * FROM STOCKS_DB")
@@ -108,7 +106,7 @@ public class BatchConfiguration {
      * Метод конфигурирующий JdbcBatchItemWriter для записи изменений в цене у StockEntity в базу данных
      */
     @Bean
-    public JdbcBatchItemWriter<StockEntity> jdbcWriter() {
+    public JdbcBatchItemWriter<StockEntity> jdbcWriter(DataSource dataSource) {
         return new JdbcBatchItemWriterBuilder<StockEntity>()
                 .sql("UPDATE STOCKS_DB SET price=:price WHERE uuid=:uuid")
                 .beanMapped()
@@ -120,9 +118,9 @@ public class BatchConfiguration {
      * Метод конфигурирующий CompositeItemWriter для одновременной записи изменений StockEntity в файл и базу данных
      */
     @Bean
-    public CompositeItemWriter<StockEntity> jdbcAndFileWriter() {
+    public CompositeItemWriter<StockEntity> jdbcAndFileWriter(DataSource dataSource) {
         CompositeItemWriter<StockEntity> writer = new CompositeItemWriter<>();
-        writer.setDelegates(Arrays.asList(jdbcWriter(), fileWriter()));
+        writer.setDelegates(Arrays.asList(jdbcWriter(dataSource), fileWriter()));
         return writer;
     }
 
@@ -130,12 +128,12 @@ public class BatchConfiguration {
      * Метод конфигурирующий Step для чтения->обработки цены->записи изменений в файл и базу данных
      */
     @Bean
-    public Step step1(JobRepository jobRepository, JpaTransactionManager transactionManager) {
+    public Step step1(JobRepository jobRepository, JpaTransactionManager transactionManager, DataSource dataSource) {
         return new StepBuilder("step1", jobRepository)
                 .<StockEntity, StockEntity>chunk(10000, transactionManager)
-                .reader(jdbcReader())
+                .reader(jdbcReader(dataSource))
                 .processor(priceProcessor())
-                .writer(jdbcAndFileWriter())
+                .writer(jdbcAndFileWriter(dataSource))
                 .build();
     }
 
