@@ -50,18 +50,18 @@ public interface StockService {
     /**
      * Метод для обновления количества товара
      *
-     * @param uuid        Уникальный идентификатор товара
+     * @param id        Уникальный идентификатор товара
      * @param stockAmount Новое количество товара
      * @return Обновленный товар
      * @throws StockNotFoundException В случае ненахождения товара с таким же уникальным идентификатором
      */
-    StockEntity updateAmountOfStock(UUID uuid, Integer stockAmount) throws StockNotFoundException;
+    StockEntity updateAmountOfStock(UUID id, Integer stockAmount) throws StockNotFoundException;
 
     /**
      * Метод для удаления товара на складе по уникальному идентификатору (UUID)
      *
-     * @param uuid Уникальный идентификатор товара
+     * @param id Уникальный идентификатор товара
      * @throws StockNotFoundException В случае ненахождения товара с таким же уникальным идентификатором
      */
-    void deleteStockByUUID(UUID uuid) throws StockNotFoundException;
+    void deleteStockByUUID(UUID id) throws StockNotFoundException;
 }

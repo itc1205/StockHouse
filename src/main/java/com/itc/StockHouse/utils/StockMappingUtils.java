@@ -20,7 +20,7 @@ public class StockMappingUtils {
      */
     public StockDto mapToStockDto(@NotNull StockEntity stockEntity) {
         return StockDto.builder()
-                .uuid(stockEntity.getUuid())
+                .id(stockEntity.getId())
                 .category(stockEntity.getCategory())
                 .name(stockEntity.getName())
                 .vendorCode(stockEntity.getVendorCode())
@@ -57,7 +57,7 @@ public class StockMappingUtils {
      */
     public StockEntity mapToStockEntity(@NotNull UpdateStockDto stockDto) {
         return StockEntity.builder()
-                .uuid(stockDto.getUuid())
+                .id(stockDto.getId())
                 .category(stockDto.getCategory())
                 .name(stockDto.getName())
                 .vendorCode(stockDto.getVendorCode())

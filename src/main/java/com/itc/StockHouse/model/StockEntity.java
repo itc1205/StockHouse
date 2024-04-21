@@ -25,8 +25,9 @@ public class StockEntity {
      * Уникальный идентификатор товара
      */
     @Id
+    @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
+    private UUID id;
     /**
      * Наименование товара
      */

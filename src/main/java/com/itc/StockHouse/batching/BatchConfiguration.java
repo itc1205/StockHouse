@@ -109,7 +109,7 @@ public class BatchConfiguration {
      */
     @Bean
     public JdbcBatchItemWriter<StockEntity> jdbcWriter(DataSource dataSource) {
-        final String updateStocksPriceQuery = "UPDATE STOCKS_DB SET price=:price WHERE uuid=:uuid";
+        final String updateStocksPriceQuery = "UPDATE STOCKS_DB SET price=:price WHERE id=:id";
 
         return new JdbcBatchItemWriterBuilder<StockEntity>()
                 .sql(updateStocksPriceQuery)

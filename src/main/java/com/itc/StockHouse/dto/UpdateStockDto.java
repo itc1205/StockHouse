@@ -15,9 +15,9 @@ public class UpdateStockDto {
     /**
      * Уникальный идентификатор товара
      */
-    @org.hibernate.validator.constraints.UUID(message = "Некорректный UUID")
-    @NotBlank(message = "UUID не может быть пустым")
-    private UUID uuid;
+    @org.hibernate.validator.constraints.UUID(message = "Некорректный формат UUID")
+    @NotBlank(message = "ID не может быть пустым")
+    private UUID id;
     /**
      * Наименование товара
      */

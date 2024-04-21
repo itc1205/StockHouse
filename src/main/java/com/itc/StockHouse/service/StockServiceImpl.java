@@ -45,8 +45,8 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public StockEntity updateStock(@NotNull StockEntity stock) throws StockNotFoundException, StockVendorCodeAlreadyExistsException {
-        StockEntity stockEntity = repository.findById(stock.getUuid()).orElseThrow(
-                () -> new StockNotFoundException("Товар с UUID %s не найден!".formatted(stock.getUuid()))
+        StockEntity stockEntity = repository.findById(stock.getId()).orElseThrow(
+                () -> new StockNotFoundException("Товар с ID %s не найден!".formatted(stock.getId()))
         );
 
         // Если у обновляемого объекта поменялся артикул
@@ -72,18 +72,18 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public StockEntity updateAmountOfStock(UUID uuid, Integer stockAmount) throws StockNotFoundException {
-        StockEntity stockEntity = repository.findById(uuid).orElseThrow(
-                () -> new StockNotFoundException("Товар с UUID %s не найден!".formatted(uuid))
+    public StockEntity updateAmountOfStock(UUID id, Integer stockAmount) throws StockNotFoundException {
+        StockEntity stockEntity = repository.findById(id).orElseThrow(
+                () -> new StockNotFoundException("Товар с ID %s не найден!".formatted(id))
         );
         stockEntity.setAmount(stockAmount);
         return repository.save(stockEntity);
     }
 
     @Override
-    public void deleteStockByUUID(UUID uuid) throws StockNotFoundException {
-        StockEntity stockEntity = repository.findById(uuid).orElseThrow(
-                () -> new StockNotFoundException("Товар с UUID %s не найден!".formatted(uuid))
+    public void deleteStockByUUID(UUID id) throws StockNotFoundException {
+        StockEntity stockEntity = repository.findById(id).orElseThrow(
+                () -> new StockNotFoundException("Товар с ID %s не найден!".formatted(id))
         );
         repository.delete(stockEntity);
     }

@@ -43,10 +43,10 @@ public class StockController {
     }
 
     @Operation(summary = "Операция получения информации о товаре на складе")
-    @GetMapping("/{uuid}")
-    public StockDto getStockByUUID(@PathVariable("uuid") UUID uuid) throws StockNotFoundException {
+    @GetMapping("/{id}")
+    public StockDto getStockByID(@PathVariable("id") UUID id) throws StockNotFoundException {
         return utils.mapToStockDto(
-                stockService.getStockByUUID(uuid)
+                stockService.getStockByUUID(id)
         );
     }
 
@@ -70,17 +70,17 @@ public class StockController {
     }
 
     @Operation(summary = "Операция обновления количества товара на складе")
-    @PatchMapping("/{uuid}")
-    public StockDto updateStockAmount(@PathVariable("uuid") UUID uuid,
+    @PatchMapping("/{id}")
+    public StockDto updateStockAmount(@PathVariable("id") UUID id,
                                       @RequestBody PatchAmountStockDTO amountStockDTO) {
         return utils.mapToStockDto(
-                stockService.updateAmountOfStock(uuid, amountStockDTO.getAmount())
+                stockService.updateAmountOfStock(id, amountStockDTO.getAmount())
         );
     }
 
     @Operation(summary = "Операция удаления товара на складе")
-    @DeleteMapping("/{uuid}")
-    public void deleteStockByUUID(@PathVariable("uuid") UUID uuid) throws StockNotFoundException {
-        stockService.deleteStockByUUID(uuid);
+    @DeleteMapping("/{id}")
+    public void deleteStockByUUID(@PathVariable("id") UUID id) throws StockNotFoundException {
+        stockService.deleteStockByUUID(id);
     }
 }
