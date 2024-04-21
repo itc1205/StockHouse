@@ -3,7 +3,7 @@ package com.itc.StockHouse.scheduling;
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.repository.StockRepository;
 import com.itc.StockHouse.support.LogMethodExecutionTime;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -27,7 +27,7 @@ import java.util.List;
  * @deprecated use {@link OptimisedProductPriceBatchScheduler} instead
  */
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DefaultProductPriceScheduler {
 
     private StockRepository repository;
