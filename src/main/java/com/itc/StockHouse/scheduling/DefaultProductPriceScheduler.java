@@ -3,6 +3,10 @@ package com.itc.StockHouse.scheduling;
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.repository.StockRepository;
 import com.itc.StockHouse.support.LogMethodExecutionTime;
+import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,9 +28,10 @@ import java.util.List;
  *
  * @deprecated use {@link OptimisedProductPriceBatchScheduler} instead
  */
+@AllArgsConstructor
 public class DefaultProductPriceScheduler {
 
-    @Autowired
+    private static final Logger log = LoggerFactory.getLogger(DefaultProductPriceScheduler.class);
     private StockRepository repository;
 
     @Value("${app.priceIncreasePercentage}")
@@ -48,6 +53,6 @@ public class DefaultProductPriceScheduler {
                 })
                 .toList();
         repository.saveAll(list);
-        System.out.printf("Обновлено %d товаров%n", list.size());
+        log.atInfo().log("Обновлено %d товаров".formatted(list.size()));
     }
 }
