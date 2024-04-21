@@ -1,17 +1,21 @@
 package com.itc.StockHouse.scheduling;
 
 import com.itc.StockHouse.configurations.BatchConfiguration;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 
 /**
  * Оптимизированный шедулер обновления цены
@@ -29,6 +33,9 @@ import java.util.UUID;
  *     {@link com.itc.StockHouse.scheduling.DefaultProductPriceScheduler}
  * </p>
  */
+@Component
+@Profile("dev")
+@ConditionalOnExpression(value = "#{'${app.scheduling.mode:none}'.equals('batch')}")
 public class OptimisedProductPriceBatchScheduler {
 
     @Autowired

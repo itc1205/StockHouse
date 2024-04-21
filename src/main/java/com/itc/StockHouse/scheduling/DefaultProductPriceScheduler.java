@@ -6,7 +6,10 @@ import com.itc.StockHouse.support.LogMethodExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -27,7 +30,9 @@ import java.util.List;
  * @deprecated use {@link OptimisedProductPriceBatchScheduler} instead
  */
 @Slf4j
-@RequiredArgsConstructor
+@Component
+@Profile("dev")
+@ConditionalOnExpression(value = "#{'${app.scheduling.mode:none}'.equals('simple')}")
 public class DefaultProductPriceScheduler {
 
     private StockRepository repository;

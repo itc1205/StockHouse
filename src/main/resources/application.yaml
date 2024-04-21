@@ -12,8 +12,7 @@ springdoc:
 
 app:
   scheduling:
-    enabled: true
-    optimization: true
+    mode: batch # none, simple, batch
     rate: 600000 #ms
   output_file: test.txt
   priceIncreasePercentage: 12.5
