@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -32,7 +33,7 @@ public class DefaultProductPriceScheduler {
     private StockRepository repository;
 
     @Value("${app.priceIncreasePercentage}")
-    private Double priceIncreasePercentage;
+    private BigDecimal priceIncreasePercentage;
 
     @Transactional
     @LogMethodExecutionTime
@@ -41,15 +42,23 @@ public class DefaultProductPriceScheduler {
         List<StockEntity> list = repository
                 .findAll()
                 .stream()
-                .peek(stockEntity -> {
-                    BigDecimal newPrice = stockEntity
-                            .getPrice()
-                            .multiply(BigDecimal.valueOf(priceIncreasePercentage / 100))
-                            .add(stockEntity.getPrice());
-                    stockEntity.setPrice(newPrice);
-                })
+                .map(this::updateStockPrice)
                 .toList();
+
         repository.saveAll(list);
         log.atInfo().log("Обновлено %d товаров".formatted(list.size()));
+    }
+
+    private StockEntity updateStockPrice(StockEntity stockEntity) {
+        BigDecimal oldPrice = stockEntity.getPrice();
+
+        BigDecimal newPrice = oldPrice.multiply(
+                priceIncreasePercentage
+                        .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
+                        .add(BigDecimal.ONE)
+        );
+
+        stockEntity.setPrice(newPrice);
+        return stockEntity;
     }
 }
