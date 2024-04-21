@@ -94,9 +94,11 @@ public class BatchConfiguration {
      */
     @Bean
     public JdbcCursorItemReader<StockEntity> jdbcReader(DataSource dataSource) {
+        final String selectAllStocksQuery = "SELECT * FROM STOCKS_DB";
+
         return new JdbcCursorItemReaderBuilder<StockEntity>()
                 .name("databaseStocksItemReader")
-                .sql("SELECT * FROM STOCKS_DB")
+                .sql(selectAllStocksQuery)
                 .dataSource(dataSource)
                 .beanRowMapper(StockEntity.class)
                 .build();
@@ -107,8 +109,10 @@ public class BatchConfiguration {
      */
     @Bean
     public JdbcBatchItemWriter<StockEntity> jdbcWriter(DataSource dataSource) {
+        final String updateStocksPriceQuery = "UPDATE STOCKS_DB SET price=:price WHERE uuid=:uuid";
+
         return new JdbcBatchItemWriterBuilder<StockEntity>()
-                .sql("UPDATE STOCKS_DB SET price=:price WHERE uuid=:uuid")
+                .sql(updateStocksPriceQuery)
                 .beanMapped()
                 .dataSource(dataSource)
                 .build();
