@@ -1,4 +1,4 @@
-package com.itc.StockHouse.processors;
+package com.itc.StockHouse.batching.processors;
 
 import com.itc.StockHouse.model.StockEntity;
 import org.springframework.batch.item.ItemProcessor;
