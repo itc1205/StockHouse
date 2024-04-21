@@ -1,5 +1,6 @@
 package com.itc.StockHouse.scheduling;
 
+import com.itc.StockHouse.configurations.BatchConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.explore.JobExplorer;
@@ -20,7 +21,7 @@ import java.util.UUID;
  * </p>
  *
  * <p>
- *     Под капотом постоянно перезапускает задачу из {@link com.itc.StockHouse.batching.BatchConfiguration}
+ *     Под капотом постоянно перезапускает задачу из {@link BatchConfiguration}
  *     через время app.scheduling.rate указанное в application.yaml
  * </p>
  * <p>

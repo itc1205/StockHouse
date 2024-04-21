@@ -1,4 +1,4 @@
-package com.itc.StockHouse.batching;
+package com.itc.StockHouse.configurations;
 
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.batching.processors.StockItemPriceProcessor;
