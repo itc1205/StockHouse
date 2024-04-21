@@ -32,7 +32,7 @@ public class DefaultProductPriceScheduler {
 
     private StockRepository repository;
 
-    @Value("${app.priceIncreasePercentage}")
+    @Value("#{new java.math.BigDecimal(\"${app.priceIncreasePercentage:10}\")}")
     private BigDecimal priceIncreasePercentage;
 
     @Transactional
