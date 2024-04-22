@@ -3,6 +3,7 @@ package com.itc.StockHouse.scheduling;
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.repository.StockRepository;
 import com.itc.StockHouse.support.LogMethodExecutionTime;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -32,13 +33,10 @@ import java.util.List;
 @Component
 @Profile("prod")
 @ConditionalOnExpression(value = "#{'${app.scheduling.mode:none}'.equals('simple')}")
+@RequiredArgsConstructor
 public class DefaultProductPriceScheduler {
 
     private final StockRepository repository;
-
-    DefaultProductPriceScheduler(StockRepository repository) {
-        this.repository = repository;
-    }
 
 
     @Value("#{new java.math.BigDecimal(\"${app.scheduling.priceIncreasePercentage:10}\")}")
