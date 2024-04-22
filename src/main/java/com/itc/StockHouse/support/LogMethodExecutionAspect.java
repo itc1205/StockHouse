@@ -1,5 +1,6 @@
 package com.itc.StockHouse.support;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,16 +14,16 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
+@Slf4j
 public class LogMethodExecutionAspect {
     @Around("@annotation(LogMethodExecutionTime)")
     public Object logMethodExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.nanoTime();
-
-        Object proceed = joinPoint.proceed();
-
-        long executionTime = System.nanoTime() - start;
-
-        System.out.printf("Метод %s выполнился за %d ms %n", joinPoint.getSignature(), executionTime / 1_000_000);
-        return proceed;
+        try {
+            return joinPoint.proceed();
+        } finally {
+            long executionTime = System.nanoTime() - start;
+            log.info("Method {} executed in {} ms", joinPoint.getSignature(), executionTime / 1_000_000);
+        }
     }
 }
