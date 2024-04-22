@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@Profile("prod")
+@Profile("dev")
 @ConditionalOnExpression(value = "#{'${app.scheduling.mode:none}'.equals('simple')}")
 public class DefaultProductPriceScheduler {
 
@@ -63,7 +63,7 @@ public class DefaultProductPriceScheduler {
 
         BigDecimal newPrice = oldPrice.multiply(
                 priceIncreasePercentage
-                        .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP)
+                        .divide(BigDecimal.valueOf(100), MathContext.DECIMAL64)
                         .add(BigDecimal.ONE)
         );
 

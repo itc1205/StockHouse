@@ -4,7 +4,7 @@ import com.itc.StockHouse.model.StockEntity;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.math.MathContext;
 
 
 /**
@@ -26,11 +26,16 @@ public class StockItemPriceProcessor implements ItemProcessor<StockEntity, Stock
 
     @Override
     public StockEntity process(final StockEntity stockEntity) {
-        BigDecimal newPrice = stockEntity
-                .getPrice()
-                .multiply(priceIncreasePercentage.divide(BigDecimal.valueOf(100), RoundingMode.CEILING))
-                .add(stockEntity.getPrice());
+        BigDecimal newPrice = calculateNewPrice(stockEntity.getPrice());
         stockEntity.setPrice(newPrice);
         return stockEntity;
+    }
+
+    private BigDecimal calculateNewPrice(BigDecimal oldPrice) {
+        return oldPrice.multiply(
+                priceIncreasePercentage
+                        .divide(BigDecimal.valueOf(100), MathContext.DECIMAL64)
+                        .add(BigDecimal.ONE)
+        );
     }
 }
