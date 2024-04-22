@@ -8,11 +8,10 @@ spring:
     console:
       enabled: true
   liquibase:
-    enabled: true
-    change-log: classpath:db/changelog.xml
+    enabled: false
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
 
 server:
   port: 9999
