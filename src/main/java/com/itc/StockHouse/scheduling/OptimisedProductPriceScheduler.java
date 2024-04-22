@@ -29,7 +29,7 @@ import java.util.UUID;
 public class OptimisedProductPriceScheduler {
     private final EntityManagerFactory entityManagerFactory;
 
-    @Value("${app.schedulingA.output_file}")
+    @Value("${app.scheduling.output_file}")
     private String fileOutput;
 
     @Value("#{new java.math.BigDecimal(\"${app.scheduling.priceIncreasePercentage:10}\")}")
