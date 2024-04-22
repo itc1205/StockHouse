@@ -34,7 +34,7 @@ import java.util.UUID;
  * </p>
  */
 @Component
-@Profile("dev")
+@Profile("prod")
 @ConditionalOnExpression(value = "#{'${app.scheduling.mode:none}'.equals('batch')}")
 @AllArgsConstructor
 public class OptimisedProductPriceBatchScheduler {
