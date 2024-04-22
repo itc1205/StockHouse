@@ -1,7 +1,7 @@
 package com.itc.StockHouse.configurations;
 
-import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.batching.processors.StockItemPriceProcessor;
+import com.itc.StockHouse.model.StockEntity;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -53,7 +53,7 @@ public class BatchConfiguration {
         BeanWrapperFieldExtractor<StockEntity> fieldExtractor = new BeanWrapperFieldExtractor<>();
         fieldExtractor.setNames(
                 new String[] {
-                        "uuid",
+                        "id",
                         "name",
                         "price",
                         "amount",
