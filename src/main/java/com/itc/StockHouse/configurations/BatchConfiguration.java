@@ -35,13 +35,13 @@ public class BatchConfiguration {
     /**
      * Путь до файла в который нужно будет записывать изменения
      */
-    @Value("${app.output_file}")
+    @Value("${app.scheduling.output_file}")
     private String fileOutput;
 
     /**
      * Процент увеличения цены
      */
-    @Value("#{new java.math.BigDecimal(\"${app.priceIncreasePercentage:10}\")}")
+    @Value("#{new java.math.BigDecimal(\"${app.scheduling.priceIncreasePercentage:10}\")}")
     private BigDecimal priceIncreasePercentage;
 
 

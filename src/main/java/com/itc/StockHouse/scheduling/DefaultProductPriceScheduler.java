@@ -41,7 +41,7 @@ public class DefaultProductPriceScheduler {
     }
 
 
-    @Value("#{new java.math.BigDecimal(\"${app.priceIncreasePercentage:10}\")}")
+    @Value("#{new java.math.BigDecimal(\"${app.scheduling.priceIncreasePercentage:10}\")}")
     private BigDecimal priceIncreasePercentage;
 
     @Transactional
