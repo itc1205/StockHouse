@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@Profile("dev")
+@Profile("prod")
 @ConditionalOnExpression(value = "#{'${app.scheduling.mode:none}'.equals('simple')}")
 public class DefaultProductPriceScheduler {
 
