@@ -10,7 +10,7 @@
             <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="price" type="DECIMAL">
+            <column name="price" type="NUMERIC(10,2)">
                 <constraints nullable="false"/>
             </column>
             <column name="amount" type="INTEGER">
