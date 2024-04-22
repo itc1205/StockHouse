@@ -12,8 +12,8 @@ springdoc:
 
 app:
   scheduling:
-    mode: optimised # none, simple, optimised, batch
-    rate: 600000 #ms
+    mode: simple # none, simple, optimised, batch
+    delay: 600000 #ms
     exclusive_lock: false
     output_file: test.txt
     priceIncreasePercentage: 12.5

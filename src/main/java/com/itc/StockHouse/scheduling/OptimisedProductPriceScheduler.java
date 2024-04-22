@@ -40,7 +40,7 @@ public class OptimisedProductPriceScheduler {
 
     @LogMethodExecutionTime
     @Transactional
-    @Scheduled(fixedDelayString = "${app.scheduling.rate}")
+    @Scheduled(fixedDelayString = "${app.scheduling.delay}")
     public void increaseProductPrice() {
         final Session session = entityManagerFactory.createEntityManager().unwrap(Session.class);
 

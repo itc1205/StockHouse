@@ -44,7 +44,7 @@ public class DefaultProductPriceScheduler {
 
     @Transactional
     @LogMethodExecutionTime
-    @Scheduled(fixedDelayString = "${app.scheduling.rate}")
+    @Scheduled(fixedDelayString = "${app.scheduling.delay}")
     public void runScheduledTask() {
         List<StockEntity> list = repository
                 .findAll()

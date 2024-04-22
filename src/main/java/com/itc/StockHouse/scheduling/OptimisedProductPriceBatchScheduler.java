@@ -50,9 +50,9 @@ public class OptimisedProductPriceBatchScheduler {
     private Job priceUpdateJob;
 
     /**
-     * Метод для запуска задачи через каждые app.scheduling.rate миллисекунд указанные в application.yaml
+     * Метод для запуска задачи через каждые app.scheduling.delay миллисекунд указанные в application.yaml
      */
-    @Scheduled(fixedDelayString = "${app.scheduling.rate}")
+    @Scheduled(fixedDelayString = "${app.scheduling.delay}")
     public void runScheduledTask() throws Exception {
 
         // Проверяем если последний JobExecution упал
