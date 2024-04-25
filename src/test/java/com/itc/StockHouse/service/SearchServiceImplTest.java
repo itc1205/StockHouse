@@ -5,7 +5,6 @@ import com.itc.StockHouse.dto.OperationDTO;
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.motherobject.MotherObject;
 import com.itc.StockHouse.repository.StockRepository;
-import com.itc.StockHouse.utils.StockMappingUtils;
 import com.itc.StockHouse.utils.criteriamapping.CriteriaMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +62,6 @@ class SearchServiceImplTest {
     @Autowired
     private StockRepository stockRepository;
     private SearchService searchService;
-    private StockMappingUtils mapper;
 
     SearchServiceImplTest() {
         this.searchService = new SearchServiceImpl(stockRepository);
