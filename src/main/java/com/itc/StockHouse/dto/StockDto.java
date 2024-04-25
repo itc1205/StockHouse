@@ -17,7 +17,7 @@ public class StockDto {
     /**
      * Уникальный идентификатор товара
      */
-    private UUID uuid;
+    private UUID id;
     /**
      * Наименование товара
      */

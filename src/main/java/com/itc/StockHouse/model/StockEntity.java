@@ -16,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "STOCKS_DB")
+@Table(name = "STOCKS")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,8 +25,9 @@ public class StockEntity {
      * Уникальный идентификатор товара
      */
     @Id
+    @Column(name = "id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
+    private UUID id;
     /**
      * Наименование товара
      */
