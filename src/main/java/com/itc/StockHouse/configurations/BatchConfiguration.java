@@ -45,6 +45,10 @@ public class BatchConfiguration {
     private BigDecimal priceIncreasePercentage;
 
 
+    private static final String UPDATE_STOCKS_PRICE_QUERY = "UPDATE STOCKS SET price=:price WHERE id=:id";
+
+    private static final String SELECT_ALL_STOCKS_QUERY = "SELECT * FROM STOCKS";
+
     /**
      * Метод конфигурирующий FlatFileItemWriter для записи изменений StockEntity в файл
      */
@@ -92,11 +96,10 @@ public class BatchConfiguration {
      */
     @Bean
     public JdbcCursorItemReader<StockEntity> jdbcReader(DataSource dataSource) {
-        final String selectAllStocksQuery = "SELECT * FROM STOCKS";
 
         return new JdbcCursorItemReaderBuilder<StockEntity>()
                 .name("databaseStocksItemReader")
-                .sql(selectAllStocksQuery)
+                .sql(SELECT_ALL_STOCKS_QUERY)
                 .dataSource(dataSource)
                 .beanRowMapper(StockEntity.class)
                 .build();
@@ -107,10 +110,9 @@ public class BatchConfiguration {
      */
     @Bean
     public JdbcBatchItemWriter<StockEntity> jdbcWriter(DataSource dataSource) {
-        final String updateStocksPriceQuery = "UPDATE STOCKS SET price=:price WHERE id=:id";
 
         return new JdbcBatchItemWriterBuilder<StockEntity>()
-                .sql(updateStocksPriceQuery)
+                .sql(UPDATE_STOCKS_PRICE_QUERY)
                 .beanMapped()
                 .dataSource(dataSource)
                 .build();
