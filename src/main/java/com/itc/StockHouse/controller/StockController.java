@@ -10,6 +10,7 @@ import com.itc.StockHouse.service.StockService;
 import com.itc.StockHouse.utils.StockMappingUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,8 +53,8 @@ public class StockController {
 
     @Operation(summary = "Операция получения всех товаров на складе")
     @GetMapping("/")
-    public List<StockDto> getAllStocks() {
-        return stockService.getAll()
+    public List<StockDto> getAllStocks(Pageable pageable) {
+        return stockService.getAll(pageable)
                 .stream()
                 .map(utils::mapToStockDto)
                 .collect(Collectors.toList());

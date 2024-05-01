@@ -6,9 +6,10 @@ import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.repository.StockRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,8 +40,10 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<StockEntity> getAll() {
-        return repository.findAll();
+    public Page<StockEntity> getAll(Pageable pageable) {
+        return repository.findAll(
+                pageable
+        );
     }
 
     @Override

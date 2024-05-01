@@ -4,8 +4,9 @@ import com.itc.StockHouse.exceptions.StockVendorCodeAlreadyExistsException;
 import com.itc.StockHouse.exceptions.StockNotFoundException;
 import com.itc.StockHouse.model.StockEntity;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -35,7 +36,7 @@ public interface StockService {
      *
      * @return Список всех товаров на складе
      */
-    List<StockEntity> getAll();
+    Page<StockEntity> getAll(Pageable pageable);
 
     /**
      * Метод для обновления товара на складе
