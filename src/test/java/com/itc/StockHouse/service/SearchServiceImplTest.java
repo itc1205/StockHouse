@@ -1,7 +1,7 @@
 package com.itc.StockHouse.service;
 
-import com.itc.StockHouse.dto.CriteriaDTO;
-import com.itc.StockHouse.dto.OperationDTO;
+import com.itc.StockHouse.dto.search.CriteriaDTO;
+import com.itc.StockHouse.dto.search.OperationDTO;
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.motherobject.MotherObject;
 import com.itc.StockHouse.repository.StockRepository;

@@ -1,4 +1,4 @@
-package com.itc.StockHouse.dto;
+package com.itc.StockHouse.dto.search;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;

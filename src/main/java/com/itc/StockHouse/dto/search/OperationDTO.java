@@ -1,4 +1,4 @@
-package com.itc.StockHouse.dto;
+package com.itc.StockHouse.dto.search;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

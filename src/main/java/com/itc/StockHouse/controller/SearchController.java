@@ -1,6 +1,6 @@
 package com.itc.StockHouse.controller;
 
-import com.itc.StockHouse.dto.CriteriaDTO;
+import com.itc.StockHouse.dto.search.CriteriaDTO;
 import com.itc.StockHouse.dto.ProductDto;
 import com.itc.StockHouse.service.SearchService;
 import com.itc.StockHouse.utils.ProductMappingUtils;
