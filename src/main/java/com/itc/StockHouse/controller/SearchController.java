@@ -5,6 +5,7 @@ import com.itc.StockHouse.dto.ProductDto;
 import com.itc.StockHouse.service.SearchService;
 import com.itc.StockHouse.utils.ProductMappingUtils;
 import com.itc.StockHouse.utils.criteriamapping.CriteriaMapper;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class SearchController {
     public List<ProductDto> searchByCriteria(
 
             @RequestBody
+            @Valid
             List<CriteriaDTO<?>> criteriaList,
 
             @RequestParam
