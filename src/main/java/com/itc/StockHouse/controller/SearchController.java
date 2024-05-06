@@ -1,9 +1,9 @@
 package com.itc.StockHouse.controller;
 
 import com.itc.StockHouse.dto.CriteriaDTO;
-import com.itc.StockHouse.dto.StockDto;
+import com.itc.StockHouse.dto.ProductDto;
 import com.itc.StockHouse.service.SearchService;
-import com.itc.StockHouse.utils.StockMappingUtils;
+import com.itc.StockHouse.utils.ProductMappingUtils;
 import com.itc.StockHouse.utils.criteriamapping.CriteriaMapper;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -20,12 +20,12 @@ import java.util.List;
 public class SearchController {
     private final SearchService searchService;
 
-    private final StockMappingUtils stockMapping;
+    private final ProductMappingUtils stockMapping;
 
     private final CriteriaMapper criteriaMapping;
 
     @PostMapping("/")
-    public List<StockDto> searchByCriteria(
+    public List<ProductDto> searchByCriteria(
 
             @RequestBody
             List<CriteriaDTO<?>> criteriaList,
@@ -46,7 +46,7 @@ public class SearchController {
                         PageRequest.of(page, size)
                 )
                 .stream()
-                .map(stockMapping::mapToStockDto)
+                .map(stockMapping::mapToProductDto)
                 .toList();
     }
 }
