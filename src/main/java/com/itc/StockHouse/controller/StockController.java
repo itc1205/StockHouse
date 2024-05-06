@@ -9,6 +9,7 @@ import com.itc.StockHouse.exceptions.StockNotFoundException;
 import com.itc.StockHouse.service.StockService;
 import com.itc.StockHouse.utils.StockMappingUtils;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
@@ -26,12 +27,11 @@ import java.util.stream.Collectors;
 @RestController
 @Validated
 @RequestMapping("/api/v1/stock")
+@RequiredArgsConstructor
 public class StockController {
-    @Autowired
-    private StockService stockService;
+    private final StockService stockService;
 
-    @Autowired
-    private StockMappingUtils utils;
+    private final StockMappingUtils utils;
 
     @Operation(summary = "Операция создания товара на складе")
     @PostMapping("/")
