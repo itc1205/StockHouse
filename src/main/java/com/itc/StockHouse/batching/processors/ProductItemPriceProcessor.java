@@ -1,6 +1,6 @@
 package com.itc.StockHouse.batching.processors;
 
-import com.itc.StockHouse.model.StockEntity;
+import com.itc.StockHouse.model.ProductEntity;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.math.BigDecimal;
@@ -8,14 +8,14 @@ import java.math.MathContext;
 
 
 /**
- * Обработчик который занимается повышением цены у StockEntity на priceIncreasePercentage
+ * Обработчик который занимается повышением цены у ProductEntity на priceIncreasePercentage
  */
-public class StockItemPriceProcessor implements ItemProcessor<StockEntity, StockEntity> {
+public class ProductItemPriceProcessor implements ItemProcessor<ProductEntity, ProductEntity> {
 
     /**
      * @param priceIncreasePercentage Процент увеличения цены
      */
-    public StockItemPriceProcessor(BigDecimal priceIncreasePercentage) {
+    public ProductItemPriceProcessor(BigDecimal priceIncreasePercentage) {
         this.priceIncreasePercentage = priceIncreasePercentage;
     }
 
@@ -25,10 +25,10 @@ public class StockItemPriceProcessor implements ItemProcessor<StockEntity, Stock
     private final BigDecimal priceIncreasePercentage;
 
     @Override
-    public StockEntity process(final StockEntity stockEntity) {
-        BigDecimal newPrice = calculateNewPrice(stockEntity.getPrice());
-        stockEntity.setPrice(newPrice);
-        return stockEntity;
+    public ProductEntity process(final ProductEntity productEntity) {
+        BigDecimal newPrice = calculateNewPrice(productEntity.getPrice());
+        productEntity.setPrice(newPrice);
+        return productEntity;
     }
 
     private BigDecimal calculateNewPrice(BigDecimal oldPrice) {

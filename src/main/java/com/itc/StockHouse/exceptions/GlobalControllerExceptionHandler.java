@@ -22,22 +22,22 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler {
     /**
-     * Обработчик исключений {@link StockVendorCodeAlreadyExistsException}
+     * Обработчик исключений {@link ProductVendorCodeAlreadyExistsException}
      */
-    @ExceptionHandler(StockVendorCodeAlreadyExistsException.class)
+    @ExceptionHandler(ProductVendorCodeAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorDTO handleArticleConflict(StockVendorCodeAlreadyExistsException ex) {
+    public ErrorDTO handleArticleConflict(ProductVendorCodeAlreadyExistsException ex) {
         return ErrorDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .error(ex.getMessage())
                 .build();
     }
     /**
-     * Обработчик исключений {@link com.itc.StockHouse.exceptions.StockNotFoundException}
+     * Обработчик исключений {@link ProductNotFoundException}
      */
-    @ExceptionHandler(StockNotFoundException.class)
+    @ExceptionHandler(ProductNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDTO NotFound(StockNotFoundException ex) {
+    public ErrorDTO NotFound(ProductNotFoundException ex) {
         return ErrorDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .error(ex.getMessage())
