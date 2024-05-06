@@ -1,11 +1,11 @@
 package com.itc.StockHouse.motherobject;
 
-import com.itc.StockHouse.model.StockEntity;
+import com.itc.StockHouse.model.ProductEntity;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
-public class StockBuilder {
+public class ProductBuilder {
     private static final String DEFAULT_NAME = "Default stock name";
     private static final BigDecimal DEFAULT_PRICE = BigDecimal.TEN;
     private static final Integer DEFAULT_AMOUNT = 15;
@@ -24,48 +24,48 @@ public class StockBuilder {
     private OffsetDateTime updateDate = DEFAULT_UPDATE_TIME;
     private OffsetDateTime creationDate = DEFAULT_CREATE_TIME;
 
-    public StockBuilder withName(String name) {
+    public ProductBuilder withName(String name) {
         this.name = name;
         return this;
     }
 
-    public StockBuilder withPrice(BigDecimal price) {
+    public ProductBuilder withPrice(BigDecimal price) {
         this.price = price;
         return this;
     }
 
-    public StockBuilder withAmount(Integer amount) {
+    public ProductBuilder withAmount(Integer amount) {
         this.amount = amount;
         return this;
     }
 
-    public StockBuilder withCategory(String category) {
+    public ProductBuilder withCategory(String category) {
         this.category = category;
         return this;
     }
 
-    public StockBuilder withVendorCode(String vendorCode) {
+    public ProductBuilder withVendorCode(String vendorCode) {
         this.vendorCode = vendorCode;
         return this;
     }
 
-    public StockBuilder withDescription(String description) {
+    public ProductBuilder withDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public StockBuilder withCreationDate(OffsetDateTime creationDate) {
+    public ProductBuilder withCreationDate(OffsetDateTime creationDate) {
         this.creationDate = creationDate;
         return this;
     }
 
-    public StockBuilder withUpdateDate(OffsetDateTime updateDate) {
+    public ProductBuilder withUpdateDate(OffsetDateTime updateDate) {
         this.updateDate = updateDate;
         return this;
     }
 
-    public StockEntity build() {
-        return StockEntity.builder()
+    public ProductEntity build() {
+        return ProductEntity.builder()
                 .name(name)
                 .price(price)
                 .amount(amount)

@@ -7,17 +7,17 @@ import java.util.UUID;
 @Setter
 
 public class MotherObject {
-    public static StockBuilder aDefaultStock() {
-        return new StockBuilder();
+    public static ProductBuilder aDefaultStock() {
+        return new ProductBuilder();
     }
 
-    public static StockBuilder aStockWithRandomVendorCode() {
-        return new StockBuilder()
+    public static ProductBuilder aStockWithRandomVendorCode() {
+        return new ProductBuilder()
                 .withVendorCode(UUID.randomUUID().toString());
     }
 
-    public static StockBuilder aStockWithRandomName() {
-        return new StockBuilder()
+    public static ProductBuilder aStockWithRandomName() {
+        return new ProductBuilder()
                 .withName("Stock#" + UUID.randomUUID());
     }
 }

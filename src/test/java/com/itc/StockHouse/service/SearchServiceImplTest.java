@@ -3,9 +3,11 @@ package com.itc.StockHouse.service;
 import com.itc.StockHouse.dto.search.criteria.CreationDateCriteria;
 import com.itc.StockHouse.dto.search.criteria.CriteriaDTO;
 import com.itc.StockHouse.dto.search.OperationDTO;
-import com.itc.StockHouse.model.StockEntity;
+import com.itc.StockHouse.dto.search.criteria.NameCriteria;
+import com.itc.StockHouse.dto.search.criteria.PriceCriteria;
+import com.itc.StockHouse.model.ProductEntity;
 import com.itc.StockHouse.motherobject.MotherObject;
-import com.itc.StockHouse.repository.StockRepository;
+import com.itc.StockHouse.repository.ProductRepository;
 import com.itc.StockHouse.utils.criteriamapping.CriteriaMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,51 +29,51 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SearchServiceImplTest {
 
     private final CriteriaMapper criteriaMapping = new CriteriaMapper();
-    private final StockEntity stockWith200Price = MotherObject
+    private final ProductEntity stockWith200Price = MotherObject
             .aStockWithRandomVendorCode()
             .withPrice(BigDecimal.valueOf(100))
             .build();
-    private final StockEntity stockWith200PriceAndNameExample1 = MotherObject
+    private final ProductEntity stockWith200PriceAndNameExample1 = MotherObject
             .aStockWithRandomVendorCode()
             .withName("Example1")
             .withPrice(BigDecimal.valueOf(200))
             .build();
-    private final StockEntity stockWithExample1Name = MotherObject
+    private final ProductEntity stockWithExample1Name = MotherObject
             .aStockWithRandomVendorCode()
             .withName("Example1")
             .withPrice(BigDecimal.TEN)
             .build();
-    private final StockEntity stockWithExampleName = MotherObject
+    private final ProductEntity stockWithExampleName = MotherObject
             .aStockWithRandomVendorCode()
             .withName("Example")
             .withPrice(BigDecimal.TEN)
             .build();
-    private final StockEntity stockWithCreationDateOfMin = MotherObject
+    private final ProductEntity stockWithCreationDateOfMin = MotherObject
             .aStockWithRandomVendorCode()
             .withCreationDate(OffsetDateTime.MIN)
             .withPrice(BigDecimal.TEN)
             .build();
-    private final StockEntity stockWithCreationDateOfMax = MotherObject
+    private final ProductEntity stockWithCreationDateOfMax = MotherObject
             .aStockWithRandomVendorCode()
             .withCreationDate(OffsetDateTime.MAX)
             .withPrice(BigDecimal.TEN)
             .build();
-    private final StockEntity stockWithCreationDateOfToday = MotherObject
+    private final ProductEntity stockWithCreationDateOfToday = MotherObject
             .aStockWithRandomVendorCode()
             .withPrice(BigDecimal.TEN)
             .build();
     @Autowired
-    private StockRepository stockRepository;
+    private ProductRepository productRepository;
     private SearchService searchService;
 
     SearchServiceImplTest() {
-        this.searchService = new SearchServiceImpl(stockRepository);
+        this.searchService = new SearchServiceImpl(productRepository);
     }
 
     @BeforeEach
     void setUp() {
 
-        stockRepository.saveAll(
+        productRepository.saveAll(
                 Arrays.asList(
                         stockWith200Price,
                         stockWith200PriceAndNameExample1,
@@ -82,28 +84,28 @@ class SearchServiceImplTest {
                         stockWithCreationDateOfToday
                 )
         );
-        stockRepository.flush();
-        searchService = new SearchServiceImpl(stockRepository);
+        productRepository.flush();
+        searchService = new SearchServiceImpl(productRepository);
     }
 
     @Test
     public void givenTaskCriteria_thenReturnAllMatching() {
-        CriteriaDTO<BigDecimal> priceCriteria1 = new CriteriaDTO.PriceCriteria();
+        PriceCriteria priceCriteria1 = new PriceCriteria();
         priceCriteria1.setField("price");
         priceCriteria1.setValue(BigDecimal.valueOf(110.0));
         priceCriteria1.setOp(OperationDTO.GREATER_THAN_OR_EQ);
 
-        CriteriaDTO<BigDecimal> priceCriteria2 = new CriteriaDTO.PriceCriteria();
+        PriceCriteria priceCriteria2 = new PriceCriteria();
         priceCriteria2.setField("price");
         priceCriteria2.setValue(BigDecimal.valueOf(240.1));
         priceCriteria2.setOp(OperationDTO.LESS_THAN_OR_EQ);
 
-        CriteriaDTO<OffsetDateTime> createdAtCriteria = new CreationDateCriteria();
+        CreationDateCriteria createdAtCriteria = new CreationDateCriteria();
         createdAtCriteria.setField("creationDate");
         createdAtCriteria.setValue(LocalDateTime.parse("2024-03-12T19:25:22").atOffset(ZoneOffset.UTC));
         createdAtCriteria.setOp(OperationDTO.GREATER_THAN_OR_EQ);
 
-        CriteriaDTO<String> nameCriteria = new CriteriaDTO.NameCriteria();
+        NameCriteria nameCriteria = new NameCriteria();
         nameCriteria.setField("name");
         nameCriteria.setValue("1");
         nameCriteria.setOp(OperationDTO.LIKE);
@@ -116,11 +118,11 @@ class SearchServiceImplTest {
                 nameCriteria
         );
 
-        List<StockEntity> expectedList = Collections.singletonList(
+        List<ProductEntity> expectedList = Collections.singletonList(
                 stockWith200PriceAndNameExample1
         );
 
-        List<StockEntity> resultList = searchService
+        List<ProductEntity> resultList = searchService
                 .searchBySpecification(
                         criteriaMapping.mapToSpecification(criteriaList),
                         PageRequest.of(0, 100))
@@ -133,7 +135,7 @@ class SearchServiceImplTest {
     @Test
     public void givenImpossibleCriteria_thenReturnAllMatching() {
 
-        CriteriaDTO<String> nameCriteria = new CriteriaDTO.NameCriteria();
+        NameCriteria nameCriteria = new NameCriteria();
         nameCriteria.setField("name");
         nameCriteria.setValue("ThisNameDoesNotExist");
         nameCriteria.setOp(OperationDTO.LIKE);
@@ -143,9 +145,9 @@ class SearchServiceImplTest {
                 nameCriteria
         );
 
-        List<StockEntity> expectedList = List.of();
+        List<ProductEntity> expectedList = List.of();
 
-        List<StockEntity> resultList = searchService
+        List<ProductEntity> resultList = searchService
                 .searchBySpecification(
                         criteriaMapping.mapToSpecification(criteriaList),
                         PageRequest.of(0, 100))
