@@ -50,7 +50,7 @@ public class BatchConfiguration {
     private static final String SELECT_ALL_PRODUCTS_QUERY = "SELECT * FROM product";
 
     /**
-     * Метод конфигурирующий FlatFileItemWriter для записи изменений StockEntity в файл
+     * Метод конфигурирующий FlatFileItemWriter для записи изменений ProductEntity в файл
      */
     @Bean
     public FlatFileItemWriter<ProductEntity> fileWriter() {
@@ -84,7 +84,7 @@ public class BatchConfiguration {
     }
 
     /**
-     * Метод конфигурирующий ItemProcessor процессора для обработки StockEntity
+     * Метод конфигурирующий ItemProcessor процессора для обработки ProductEntity
      */
     @Bean
     public ItemProcessor<ProductEntity, ProductEntity> priceProcessor() {
@@ -92,7 +92,7 @@ public class BatchConfiguration {
     }
 
     /**
-     * Метод конфигурирующий JdbcCursorItemReader для чтения записей StockEntity из базы данных
+     * Метод конфигурирующий JdbcCursorItemReader для чтения записей ProductEntity из базы данных
      */
     @Bean
     public JdbcCursorItemReader<ProductEntity> jdbcReader(DataSource dataSource) {
@@ -106,7 +106,7 @@ public class BatchConfiguration {
     }
 
     /**
-     * Метод конфигурирующий JdbcBatchItemWriter для записи изменений в цене у StockEntity в базу данных
+     * Метод конфигурирующий JdbcBatchItemWriter для записи изменений в цене у ProductEntity в базу данных
      */
     @Bean
     public JdbcBatchItemWriter<ProductEntity> jdbcWriter(DataSource dataSource) {
@@ -119,7 +119,7 @@ public class BatchConfiguration {
     }
 
     /**
-     * Метод конфигурирующий CompositeItemWriter для одновременной записи изменений StockEntity в файл и базу данных
+     * Метод конфигурирующий CompositeItemWriter для одновременной записи изменений ProductEntity в файл и базу данных
      */
     @Bean
     public CompositeItemWriter<ProductEntity> jdbcAndFileWriter(DataSource dataSource) {
