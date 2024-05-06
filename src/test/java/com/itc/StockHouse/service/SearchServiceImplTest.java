@@ -8,7 +8,7 @@ import com.itc.StockHouse.dto.search.criteria.PriceCriteria;
 import com.itc.StockHouse.model.ProductEntity;
 import com.itc.StockHouse.motherobject.MotherObject;
 import com.itc.StockHouse.repository.ProductRepository;
-import com.itc.StockHouse.utils.criteriamapping.CriteriaMapper;
+import com.itc.StockHouse.utils.criteriamapping.CriteriaSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 class SearchServiceImplTest {
 
-    private final CriteriaMapper criteriaMapping = new CriteriaMapper();
     private final ProductEntity stockWith200Price = MotherObject
             .aStockWithRandomVendorCode()
             .withPrice(BigDecimal.valueOf(100))
@@ -124,7 +123,7 @@ class SearchServiceImplTest {
 
         List<ProductEntity> resultList = searchService
                 .searchBySpecification(
-                        criteriaMapping.mapToSpecification(criteriaList),
+                        new CriteriaSpecification(criteriaList),
                         PageRequest.of(0, 100))
                 .stream().toList();
 
@@ -149,7 +148,7 @@ class SearchServiceImplTest {
 
         List<ProductEntity> resultList = searchService
                 .searchBySpecification(
-                        criteriaMapping.mapToSpecification(criteriaList),
+                        new CriteriaSpecification(criteriaList),
                         PageRequest.of(0, 100))
                 .stream()
                 .toList();
