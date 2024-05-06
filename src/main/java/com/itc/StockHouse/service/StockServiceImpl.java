@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,6 +62,9 @@ public class StockServiceImpl implements StockService {
                 );
             }
         }
+        if (stock.getAmount().equals(stockEntity.getAmount())) {
+            stock.setUpdateDate(OffsetDateTime.now());
+        }
 
         // BUG: По непонятной причине, поле creationDate имеет значение null
         // ДАЖЕ если мы после сохранения заново пытаемся получить значение товара из базы данных в новую переменную
@@ -80,6 +84,7 @@ public class StockServiceImpl implements StockService {
                 () -> new StockNotFoundException("Товар с ID %s не найден!".formatted(id))
         );
         stockEntity.setAmount(stockAmount);
+        stockEntity.setUpdateDate(OffsetDateTime.now());
         return repository.save(stockEntity);
     }
 
