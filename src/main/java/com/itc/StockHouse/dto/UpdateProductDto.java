@@ -4,12 +4,20 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.UUID;
+
 
 /**
- * DTO-объект содержащий необходимую информацию для создания товара на складе
+ * DTO-объект содержащий необходимую информацию для обновления товара на складе
  */
 @Data
-public class CreateStockDto {
+public class UpdateProductDto {
+    /**
+     * Уникальный идентификатор товара
+     */
+    @org.hibernate.validator.constraints.UUID(message = "Некорректный формат UUID")
+    @NotBlank(message = "ID не может быть пустым")
+    private UUID id;
     /**
      * Наименование товара
      */
