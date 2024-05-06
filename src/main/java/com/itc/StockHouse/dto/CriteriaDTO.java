@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.itc.StockHouse.utils.criteriamapping.strategies.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -38,29 +35,6 @@ public class CriteriaDTO<T> {
     private OperationDTO op;
     @NotNull
     private T value;
-
-    public <X> Predicate toPredicate(CriteriaBuilder criteriaBuilder, Root<X> root) {
-        switch (op) {
-            case EQUAL -> {
-                return predicateMapperStrategy.toEqualPredicate(value, criteriaBuilder, root.get(field));
-
-            }
-            case LIKE -> {
-                return predicateMapperStrategy.toLikePredicate(value, criteriaBuilder, root.get(field));
-
-            }
-            case GREATER_THAN_OR_EQ -> {
-                return predicateMapperStrategy.toGreaterThanOrEqualPredicate(value, criteriaBuilder, root.get(field));
-
-            }
-            case LESS_THAN_OR_EQ -> {
-                return predicateMapperStrategy.toLessThanOrEqualPredicate(value, criteriaBuilder, root.get(field));
-            }
-            default -> {
-                throw new UnsupportedOperationException();
-            }
-        }
-    }
 
     public static class NameCriteria extends CriteriaDTO<String> {
         public NameCriteria() {

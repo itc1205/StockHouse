@@ -11,13 +11,42 @@ import java.util.List;
 
 @Component
 public class CriteriaMapper {
-
-
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Specification<ProductEntity> mapToSpecification(List<CriteriaDTO<?>> criteriaList) {
         return (root, query, criteriaBuilder) -> {
             final List<Predicate> predicates = new ArrayList<>();
-            for (CriteriaDTO<?> criteria : criteriaList) {
-                predicates.add(criteria.toPredicate(criteriaBuilder, root));
+            for (CriteriaDTO criteria : criteriaList) {
+                switch (criteria.getOp()) {
+                    case EQUAL -> predicates.add(criteria.getPredicateMapperStrategy()
+                            .toEqualPredicate(
+                                    criteria.getValue(),
+                                    criteriaBuilder,
+                                    root.get(criteria.getField())
+                            )
+                    );
+                    case LIKE -> predicates.add(criteria.getPredicateMapperStrategy()
+                            .toLikePredicate(
+                                    criteria.getValue(),
+                                    criteriaBuilder,
+                                    root.get(criteria.getField())
+                            )
+                    );
+                    case GREATER_THAN_OR_EQ -> predicates.add(criteria.getPredicateMapperStrategy()
+                            .toGreaterThanOrEqualPredicate(
+                                    criteria.getValue(),
+                                    criteriaBuilder,
+                                    root.get(criteria.getField())
+                            )
+                    );
+                    case LESS_THAN_OR_EQ -> predicates.add(criteria.getPredicateMapperStrategy().
+                            toLessThanOrEqualPredicate(
+                                    criteria.getValue(),
+                                    criteriaBuilder,
+                                    root.get(criteria.getField())
+                            )
+                    );
+                    default -> throw new UnsupportedOperationException();
+                }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
