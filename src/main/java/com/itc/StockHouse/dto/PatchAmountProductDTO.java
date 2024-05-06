@@ -8,7 +8,7 @@ import lombok.Data;
  * DTO-объект для обновления кол-ва товаров
  */
 @Data
-public class PatchAmountStockDTO {
+public class PatchAmountProductDTO {
     /**
      * Количество товара
      */

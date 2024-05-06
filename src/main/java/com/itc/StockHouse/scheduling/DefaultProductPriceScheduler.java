@@ -1,7 +1,7 @@
 package com.itc.StockHouse.scheduling;
 
-import com.itc.StockHouse.model.StockEntity;
-import com.itc.StockHouse.repository.StockRepository;
+import com.itc.StockHouse.model.ProductEntity;
+import com.itc.StockHouse.repository.ProductRepository;
 import com.itc.StockHouse.support.LogMethodExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DefaultProductPriceScheduler {
 
-    private final StockRepository repository;
+    private final ProductRepository repository;
 
 
     @Value("#{new java.math.BigDecimal(\"${app.scheduling.priceIncreasePercentage:10}\")}")
@@ -46,18 +46,18 @@ public class DefaultProductPriceScheduler {
     @LogMethodExecutionTime
     @Scheduled(fixedDelayString = "${app.scheduling.delay}")
     public void runScheduledTask() {
-        List<StockEntity> list = repository
+        List<ProductEntity> list = repository
                 .findAll()
                 .stream()
-                .map(this::updateStockPrice)
+                .map(this::updateProductPrice)
                 .toList();
 
         repository.saveAll(list);
         log.atInfo().log("Обновлено %d товаров".formatted(list.size()));
     }
 
-    private StockEntity updateStockPrice(StockEntity stockEntity) {
-        BigDecimal oldPrice = stockEntity.getPrice();
+    private ProductEntity updateProductPrice(ProductEntity productEntity) {
+        BigDecimal oldPrice = productEntity.getPrice();
 
         BigDecimal newPrice = oldPrice.multiply(
                 priceIncreasePercentage
@@ -65,7 +65,7 @@ public class DefaultProductPriceScheduler {
                         .add(BigDecimal.ONE)
         );
 
-        stockEntity.setPrice(newPrice);
-        return stockEntity;
+        productEntity.setPrice(newPrice);
+        return productEntity;
     }
 }

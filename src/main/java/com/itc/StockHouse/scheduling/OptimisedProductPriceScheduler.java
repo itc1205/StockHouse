@@ -56,15 +56,15 @@ public class OptimisedProductPriceScheduler {
                         long rowCounter = 0L;
 
                         if (exclusiveLock) {
-                            String lockQuery = "LOCK TABLE STOCKS IN ACCESS EXCLUSIVE MODE";
+                            String lockQuery = "LOCK TABLE product IN ACCESS EXCLUSIVE MODE";
                             Statement lockStatement = connection.createStatement();
                             lockStatement.execute(lockQuery);
                         }
 
-                        String selectQuery = "SELECT * FROM STOCKS FOR UPDATE";
+                        String selectQuery = "SELECT * FROM product FOR UPDATE";
                         Statement statement = connection.createStatement();
 
-                        String updateQuery = "UPDATE STOCKS SET PRICE = ? WHERE id = ?";
+                        String updateQuery = "UPDATE product SET PRICE = ? WHERE id = ?";
                         PreparedStatement preparedStatement = connection.prepareStatement(updateQuery);
 
                         ResultSet rs = statement.executeQuery(selectQuery);

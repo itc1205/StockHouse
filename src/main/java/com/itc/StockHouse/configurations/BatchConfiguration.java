@@ -1,7 +1,7 @@
 package com.itc.StockHouse.configurations;
 
-import com.itc.StockHouse.batching.processors.StockItemPriceProcessor;
-import com.itc.StockHouse.model.StockEntity;
+import com.itc.StockHouse.batching.processors.ProductItemPriceProcessor;
+import com.itc.StockHouse.model.ProductEntity;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -45,16 +45,16 @@ public class BatchConfiguration {
     private BigDecimal priceIncreasePercentage;
 
 
-    private static final String UPDATE_STOCKS_PRICE_QUERY = "UPDATE STOCKS SET price=:price WHERE id=:id";
+    private static final String UPDATE_PRODUCT_PRICE_QUERY = "UPDATE product SET price=:price WHERE id=:id";
 
-    private static final String SELECT_ALL_STOCKS_QUERY = "SELECT * FROM STOCKS";
+    private static final String SELECT_ALL_PRODUCTS_QUERY = "SELECT * FROM product";
 
     /**
-     * Метод конфигурирующий FlatFileItemWriter для записи изменений StockEntity в файл
+     * Метод конфигурирующий FlatFileItemWriter для записи изменений ProductEntity в файл
      */
     @Bean
-    public FlatFileItemWriter<StockEntity> fileWriter() {
-        BeanWrapperFieldExtractor<StockEntity> fieldExtractor = new BeanWrapperFieldExtractor<>();
+    public FlatFileItemWriter<ProductEntity> fileWriter() {
+        BeanWrapperFieldExtractor<ProductEntity> fieldExtractor = new BeanWrapperFieldExtractor<>();
         fieldExtractor.setNames(
                 new String[] {
                         "id",
@@ -70,12 +70,12 @@ public class BatchConfiguration {
         );
         fieldExtractor.afterPropertiesSet();
 
-        DelimitedLineAggregator<StockEntity> lineAggregator = new DelimitedLineAggregator<>();
+        DelimitedLineAggregator<ProductEntity> lineAggregator = new DelimitedLineAggregator<>();
         lineAggregator.setDelimiter(",");
         lineAggregator.setFieldExtractor(fieldExtractor);
 
-        return new FlatFileItemWriterBuilder<StockEntity>()
-                .name("stockWriter")
+        return new FlatFileItemWriterBuilder<ProductEntity>()
+                .name("productWriter")
                 .resource(new FileSystemResource(fileOutput))
                 .lineAggregator(lineAggregator)
                 .shouldDeleteIfExists(true)
@@ -84,46 +84,46 @@ public class BatchConfiguration {
     }
 
     /**
-     * Метод конфигурирующий ItemProcessor процессора для обработки StockEntity
+     * Метод конфигурирующий ItemProcessor процессора для обработки ProductEntity
      */
     @Bean
-    public ItemProcessor<StockEntity, StockEntity> priceProcessor() {
-        return new StockItemPriceProcessor(priceIncreasePercentage);
+    public ItemProcessor<ProductEntity, ProductEntity> priceProcessor() {
+        return new ProductItemPriceProcessor(priceIncreasePercentage);
     }
 
     /**
-     * Метод конфигурирующий JdbcCursorItemReader для чтения записей StockEntity из базы данных
+     * Метод конфигурирующий JdbcCursorItemReader для чтения записей ProductEntity из базы данных
      */
     @Bean
-    public JdbcCursorItemReader<StockEntity> jdbcReader(DataSource dataSource) {
+    public JdbcCursorItemReader<ProductEntity> jdbcReader(DataSource dataSource) {
 
-        return new JdbcCursorItemReaderBuilder<StockEntity>()
-                .name("databaseStocksItemReader")
-                .sql(SELECT_ALL_STOCKS_QUERY)
+        return new JdbcCursorItemReaderBuilder<ProductEntity>()
+                .name("databaseProductsItemReader")
+                .sql(SELECT_ALL_PRODUCTS_QUERY)
                 .dataSource(dataSource)
-                .beanRowMapper(StockEntity.class)
+                .beanRowMapper(ProductEntity.class)
                 .build();
     }
 
     /**
-     * Метод конфигурирующий JdbcBatchItemWriter для записи изменений в цене у StockEntity в базу данных
+     * Метод конфигурирующий JdbcBatchItemWriter для записи изменений в цене у ProductEntity в базу данных
      */
     @Bean
-    public JdbcBatchItemWriter<StockEntity> jdbcWriter(DataSource dataSource) {
+    public JdbcBatchItemWriter<ProductEntity> jdbcWriter(DataSource dataSource) {
 
-        return new JdbcBatchItemWriterBuilder<StockEntity>()
-                .sql(UPDATE_STOCKS_PRICE_QUERY)
+        return new JdbcBatchItemWriterBuilder<ProductEntity>()
+                .sql(UPDATE_PRODUCT_PRICE_QUERY)
                 .beanMapped()
                 .dataSource(dataSource)
                 .build();
     }
 
     /**
-     * Метод конфигурирующий CompositeItemWriter для одновременной записи изменений StockEntity в файл и базу данных
+     * Метод конфигурирующий CompositeItemWriter для одновременной записи изменений ProductEntity в файл и базу данных
      */
     @Bean
-    public CompositeItemWriter<StockEntity> jdbcAndFileWriter(DataSource dataSource) {
-        CompositeItemWriter<StockEntity> writer = new CompositeItemWriter<>();
+    public CompositeItemWriter<ProductEntity> jdbcAndFileWriter(DataSource dataSource) {
+        CompositeItemWriter<ProductEntity> writer = new CompositeItemWriter<>();
         writer.setDelegates(Arrays.asList(jdbcWriter(dataSource), fileWriter()));
         return writer;
     }
@@ -134,7 +134,7 @@ public class BatchConfiguration {
     @Bean
     public Step step1(JobRepository jobRepository, JpaTransactionManager transactionManager, DataSource dataSource) {
         return new StepBuilder("step1", jobRepository)
-                .<StockEntity, StockEntity>chunk(10000, transactionManager)
+                .<ProductEntity, ProductEntity>chunk(10000, transactionManager)
                 .reader(jdbcReader(dataSource))
                 .processor(priceProcessor())
                 .writer(jdbcAndFileWriter(dataSource))
