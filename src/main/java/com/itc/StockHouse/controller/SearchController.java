@@ -4,7 +4,7 @@ import com.itc.StockHouse.dto.search.criteria.CriteriaDTO;
 import com.itc.StockHouse.dto.ProductDto;
 import com.itc.StockHouse.service.SearchService;
 import com.itc.StockHouse.utils.ProductMappingUtils;
-import com.itc.StockHouse.utils.criteriamapping.CriteriaMapper;
+import com.itc.StockHouse.utils.criteriamapping.CriteriaSpecification;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -28,8 +28,6 @@ public class SearchController {
 
     private final ProductMappingUtils stockMapping;
 
-    private final CriteriaMapper criteriaMapping;
-
     @PostMapping("/")
     public List<ProductDto> searchByCriteria(
 
@@ -49,7 +47,7 @@ public class SearchController {
     ) {
         return searchService
                 .searchBySpecification(
-                        criteriaMapping.mapToSpecification(criteriaList),
+                        new CriteriaSpecification(criteriaList),
                         PageRequest.of(page, size)
                 )
                 .stream()
