@@ -62,7 +62,6 @@ public class StockEntity {
      * Время и дата обновления товара
      */
     @Column(name = "update_date", nullable = false)
-    @UpdateTimestamp
     private OffsetDateTime updateDate;
     /**
      * Время и дата создания товара
