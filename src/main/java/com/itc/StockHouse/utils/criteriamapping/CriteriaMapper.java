@@ -1,6 +1,6 @@
 package com.itc.StockHouse.utils.criteriamapping;
 
-import com.itc.StockHouse.dto.search.CriteriaDTO;
+import com.itc.StockHouse.dto.search.criteria.CriteriaDTO;
 import com.itc.StockHouse.model.ProductEntity;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;

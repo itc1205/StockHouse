@@ -1,6 +1,7 @@
 package com.itc.StockHouse.service;
 
-import com.itc.StockHouse.dto.search.CriteriaDTO;
+import com.itc.StockHouse.dto.search.criteria.CreationDateCriteria;
+import com.itc.StockHouse.dto.search.criteria.CriteriaDTO;
 import com.itc.StockHouse.dto.search.OperationDTO;
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.motherobject.MotherObject;
@@ -97,7 +98,7 @@ class SearchServiceImplTest {
         priceCriteria2.setValue(BigDecimal.valueOf(240.1));
         priceCriteria2.setOp(OperationDTO.LESS_THAN_OR_EQ);
 
-        CriteriaDTO<OffsetDateTime> createdAtCriteria = new CriteriaDTO.CreationDateCriteria();
+        CriteriaDTO<OffsetDateTime> createdAtCriteria = new CreationDateCriteria();
         createdAtCriteria.setField("creationDate");
         createdAtCriteria.setValue(LocalDateTime.parse("2024-03-12T19:25:22").atOffset(ZoneOffset.UTC));
         createdAtCriteria.setOp(OperationDTO.GREATER_THAN_OR_EQ);
