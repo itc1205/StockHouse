@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,20 +36,12 @@ public class SearchController {
             @Valid
             List<CriteriaDTO<?>> criteriaList,
 
-            @RequestParam
-            @NotNull(message = "Параметр page не должен быть пустым")
-            @Min(value = 0, message = "Номер страницы должен быть положительным")
-            Integer page,
-
-            @RequestParam
-            @NotNull(message = "Параметр size не должен быть пустым")
-            @Min(value = 1, message = "Размер страницы должен быть больше 0")
-            Integer size
+            Pageable pageable
     ) {
         return searchService
                 .searchBySpecification(
                         new CriteriaSpecification(criteriaList),
-                        PageRequest.of(page, size)
+                        pageable
                 )
                 .stream()
                 .map(stockMapping::mapToProductDto)

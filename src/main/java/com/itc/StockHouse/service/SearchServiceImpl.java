@@ -5,6 +5,7 @@ import com.itc.StockHouse.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class SearchServiceImpl implements SearchService {
     private final ProductRepository productRepository;
 
     @Override
-    public Page<ProductEntity> searchBySpecification(Specification<ProductEntity> specification, PageRequest pageRequest) {
-        return productRepository.findAll(specification, pageRequest);
+    public Page<ProductEntity> searchBySpecification(Specification<ProductEntity> specification, Pageable pageable) {
+        return productRepository.findAll(specification, pageable);
     }
 }
