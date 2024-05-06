@@ -11,7 +11,7 @@ import java.time.OffsetDateTime;
 public class CreationDateCriteria implements CriteriaDTO<OffsetDateTime> {
     private final static PredicateMapperStrategy<OffsetDateTime> predicateMapperStrategy = new OffsetDateTimePredicateMapperStrategy();
     private String field;
-    private String value;
+    private OffsetDateTime value;
     private OperationDTO op;
 
     @Override

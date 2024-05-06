@@ -9,7 +9,7 @@ import lombok.Data;
 public class AmountCriteria implements CriteriaDTO<Integer> {
     private static final PredicateMapperStrategy<Integer> predicateMapperStrategy = new IntegerPredicateMapperStrategy();
     private String field;
-    private String value;
+    private Integer value;
     private OperationDTO op;
 
     @Override

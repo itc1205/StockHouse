@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class PriceCriteria implements CriteriaDTO<BigDecimal> {
     private final static PredicateMapperStrategy<BigDecimal> predicateMapperStrategy = new BigDecimalPredicateMapperStrategy();
     private String field;
-    private String value;
+    private BigDecimal value;
     private OperationDTO op;
 
     @Override
