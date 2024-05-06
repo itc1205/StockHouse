@@ -4,8 +4,8 @@ import com.itc.StockHouse.exceptions.StockVendorCodeAlreadyExistsException;
 import com.itc.StockHouse.exceptions.StockNotFoundException;
 import com.itc.StockHouse.model.StockEntity;
 import com.itc.StockHouse.repository.StockRepository;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,9 @@ import java.util.UUID;
  * Реализация сервиса по управлению товарами на складе {@link com.itc.StockHouse.service.StockService}
  */
 @Service
+@RequiredArgsConstructor
 public class StockServiceImpl implements StockService {
-    @Autowired
-    private StockRepository repository;
+    private final StockRepository repository;
 
     @Override
     public StockEntity createStock(@NotNull StockEntity stock) throws StockVendorCodeAlreadyExistsException {
