@@ -1,8 +1,11 @@
 package com.itc.StockHouse.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -68,4 +71,7 @@ public class ProductEntity {
     @Column(name = "creation_date", nullable = false, updatable = false)
     @CreationTimestamp
     private OffsetDateTime creationDate;
+
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable;
 }
