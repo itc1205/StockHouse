@@ -30,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
                     "Товар с артикулом %s уже есть в базе данных".formatted(product.getVendorCode())
             );
         }
+        product.setUpdateDate(OffsetDateTime.now());
         return repository.save(product);
     }
 
