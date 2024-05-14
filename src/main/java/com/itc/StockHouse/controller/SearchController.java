@@ -1,0 +1,46 @@
+package com.itc.StockHouse.controller;
+
+import com.itc.StockHouse.dto.search.criteria.CriteriaDTO;
+import com.itc.StockHouse.dto.ProductDto;
+import com.itc.StockHouse.service.SearchService;
+import com.itc.StockHouse.utils.ProductMappingUtils;
+import com.itc.StockHouse.utils.criteriamapping.CriteriaSpecification;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+import java.util.List;
+
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/search")
+public class SearchController {
+    private final SearchService searchService;
+
+    private final ProductMappingUtils stockMapping;
+
+    @PostMapping("/")
+    public List<ProductDto> searchByCriteria(
+
+            @RequestBody
+            @Valid
+            List<CriteriaDTO<?>> criteriaList,
+
+            Pageable pageable
+    ) {
+        return searchService
+                .searchBySpecification(
+                        new CriteriaSpecification(criteriaList),
+                        pageable
+                )
+                .stream()
+                .map(stockMapping::mapToProductDto)
+                .toList();
+    }
+}
