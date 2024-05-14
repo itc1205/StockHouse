@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
 
         HashMap<UUID, Integer> insufficientItems = new HashMap<>();
         OrderEntity finalNewOrder = newOrder;
-        List<OrderedProductEntity> orderedProductEntities = productRepository.findAllById(requestProducts.keySet()).stream().map(
+        List<OrderedProductEntity> orderedProductEntities = productRepository.streamAllByIds(requestProducts.keySet()).map(
                 productEntity -> {
                     if (productEntity.getAmount() < requestProducts.get(productEntity.getId())) {
                         insufficientItems.put(productEntity.getId(), productEntity.getAmount());
