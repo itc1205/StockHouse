@@ -3,7 +3,7 @@ package com.itc.StockHouse.exceptions.order;
 import java.util.Map;
 import java.util.UUID;
 
-public class InsufficientProductsException extends Throwable {
+public class InsufficientProductsException extends RuntimeException {
     private final Map<UUID, Integer> ids;
 
     public InsufficientProductsException(Map<UUID, Integer> ids) {
