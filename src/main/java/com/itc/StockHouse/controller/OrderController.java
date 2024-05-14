@@ -31,13 +31,13 @@ public class OrderController {
 
 
     @GetMapping("/{id}")
-    OrderDTO getOrderById(@RequestHeader Long customerId, UUID id) throws OrderNotFoundException, CustomerNotFoundException, InsufficientRightsException {
+    OrderDTO getOrderById(@RequestHeader Long customerId, UUID id) {
         CustomerDTO customerDTO = customerService.getCustomer(customerId);
         return orderService.getOrderById(customerDTO, id);
     }
 
     @PostMapping("/")
-    UUID createOrder(@RequestHeader Long customerId, @RequestBody CreateOrderSchema order) throws CustomerNotFoundException, InsufficientProductsException {
+    UUID createOrder(@RequestHeader Long customerId, @RequestBody CreateOrderSchema order) {
         CustomerDTO customerDTO = customerService.getCustomer(customerId);
         OrderDTO orderDTO = OrderDTO.builder()
                 .deliveryAddress(order.getDeliveryAddress())
@@ -53,7 +53,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}")
-    void updateOrder(@RequestHeader Long customerId, @RequestBody List<ProductSchema> products, @PathVariable UUID orderId) throws CustomerNotFoundException, OrderNotFoundException, InsufficientProductsException, InsufficientRightsException, OrderCantBeChangedException {
+    void updateOrder(@RequestHeader Long customerId, @RequestBody List<ProductSchema> products, @PathVariable UUID orderId) {
         CustomerDTO customerDTO = customerService.getCustomer(customerId);
         List<ProductDTO> productDTOList = products.stream()
                 .map(productSchema -> ProductDTO.builder()
@@ -65,13 +65,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderId}")
-    void softDeleteOrder(@RequestHeader Long customerId, @PathVariable UUID orderId) throws OrderNotFoundException, OrderCantBeDeletedException, CustomerNotFoundException, InsufficientRightsException {
+    void softDeleteOrder(@RequestHeader Long customerId, @PathVariable UUID orderId) {
         CustomerDTO customerDTO = customerService.getCustomer(customerId);
         orderService.softDeleteOrder(customerDTO, orderId);
     }
 
     @PatchMapping("/{orderId}/status")
-    void updateOrderStatus(@RequestHeader Long customerId, @RequestBody SetOrderStatusSchema orderStatusSchema, @PathVariable UUID orderId) throws CustomerNotFoundException, OrderNotFoundException, InsufficientRightsException {
+    void updateOrderStatus(@RequestHeader Long customerId, @RequestBody SetOrderStatusSchema orderStatusSchema, @PathVariable UUID orderId) {
         CustomerDTO customerDTO = customerService.getCustomer(customerId);
         orderService.setStatus(customerDTO, orderStatusSchema.getStatus(), orderId);
     }

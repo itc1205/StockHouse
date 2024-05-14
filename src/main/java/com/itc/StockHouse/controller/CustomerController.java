@@ -17,12 +17,12 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @GetMapping("/{id}")
-    CustomerDTO getCustomerById(Long id) throws CustomerNotFoundException {
+    CustomerDTO getCustomerById(Long id) {
         return customerService.getCustomer(id);
     }
 
     @PostMapping("/")
-    Long createCustomer(CreateCustomerSchema customer) throws CustomerAlreadyExistsException {
+    Long createCustomer(CreateCustomerSchema customer) {
         return customerService.createCustomer(
                 CustomerDTO.builder()
                         .email(customer.getEmail())
