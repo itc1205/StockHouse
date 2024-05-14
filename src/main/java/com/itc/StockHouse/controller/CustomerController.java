@@ -2,8 +2,6 @@ package com.itc.StockHouse.controller;
 
 import com.itc.StockHouse.dto.domain.customer.CustomerDTO;
 import com.itc.StockHouse.dto.schema.customer.CreateCustomerSchema;
-import com.itc.StockHouse.exceptions.customer.CustomerAlreadyExistsException;
-import com.itc.StockHouse.exceptions.customer.CustomerNotFoundException;
 import com.itc.StockHouse.service.customer.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +28,4 @@ public class CustomerController {
                         .build()
         );
     }
-
-
 }
