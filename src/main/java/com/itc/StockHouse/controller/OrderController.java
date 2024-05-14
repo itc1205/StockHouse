@@ -31,9 +31,9 @@ public class OrderController {
 
 
     @GetMapping("/{id}")
-    OrderDTO getOrderById(@RequestHeader Long customerId, UUID id) {
+    OrderDTO getOrderById(@RequestHeader Long customerId, UUID orderId) {
         CustomerDTO customerDTO = customerService.getCustomer(customerId);
-        return orderService.getOrderById(customerDTO, id);
+        return orderService.getOrderById(customerDTO, orderId);
     }
 
     @PostMapping("/")
