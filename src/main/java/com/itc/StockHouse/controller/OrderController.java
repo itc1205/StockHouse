@@ -48,7 +48,7 @@ public class OrderController {
                                 .quantity(product.getQuantity())
                                 .build())
                         .toList())
-                        .build();
+                .build();
         return orderService.createOrder(customerDTO, orderDTO);
     }
 

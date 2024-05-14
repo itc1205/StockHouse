@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO getOrderById(CustomerDTO customer, UUID id) throws OrderNotFoundException, InsufficientRightsException {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
-        if (!customer.getId().equals( order.getCustomer().getId())) {
+        if (!customer.getId().equals(order.getCustomer().getId())) {
             throw new InsufficientRightsException();
         }
 
@@ -65,7 +65,6 @@ public class OrderServiceImpl implements OrderService {
         CustomerEntity customerEntity = customerRepository.findById(customer.getId()).orElseThrow(
                 CustomerNotFoundException::new
         );
-
 
 
         OrderEntity newOrder = OrderEntity.builder()
@@ -102,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
                 }
         ).toList();
 
-        if (orderedProductEntities.size() != requestProducts.keySet().size()){
+        if (orderedProductEntities.size() != requestProducts.keySet().size()) {
             throw new ProductNotFoundException("Product not found");
         }
         if (!insufficientItems.isEmpty()) {
@@ -119,7 +118,7 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
 
-        if (!customer.getId().equals( order.getCustomer().getId())) {
+        if (!customer.getId().equals(order.getCustomer().getId())) {
             throw new InsufficientRightsException();
         }
 
@@ -152,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
                 }
         ).toList();
 
-        if (orderedProductEntities.size() != requestProducts.keySet().size()){
+        if (orderedProductEntities.size() != requestProducts.keySet().size()) {
             throw new ProductNotFoundException("Product not found");
         }
         if (!insufficientItems.isEmpty()) {
@@ -162,13 +161,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-
     @Override
     @Transactional
     public void softDeleteOrder(CustomerDTO customer, UUID id) throws OrderCantBeDeletedException, OrderNotFoundException, InsufficientRightsException {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
-        if (!customer.getId().equals( order.getCustomer().getId())) {
+        if (!customer.getId().equals(order.getCustomer().getId())) {
             throw new InsufficientRightsException();
         }
 
@@ -176,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
             throw new OrderCantBeDeletedException();
         }
 
-        for (OrderedProductEntity orderedProduct: order.getProducts()) {
+        for (OrderedProductEntity orderedProduct : order.getProducts()) {
             // This block should never be executed. In case it does, there is some major inconsistency errors with persistence
             ProductEntity product = productRepository.findById(orderedProduct.getId().getProductId())
                     .orElseThrow(() -> new RuntimeException("This is awfull. Product with id %s does not exist in 'product' table, however it is ordered.".formatted(

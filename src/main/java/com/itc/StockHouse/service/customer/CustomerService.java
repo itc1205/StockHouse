@@ -6,5 +6,6 @@ import com.itc.StockHouse.exceptions.customer.CustomerNotFoundException;
 
 public interface CustomerService {
     Long createCustomer(CustomerDTO customer) throws CustomerAlreadyExistsException;
+
     CustomerDTO getCustomer(Long id) throws CustomerNotFoundException;
 }
