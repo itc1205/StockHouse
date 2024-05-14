@@ -4,7 +4,7 @@ import com.itc.StockHouse.dto.domain.customer.CustomerDTO;
 import com.itc.StockHouse.dto.domain.order.OrderDTO;
 import com.itc.StockHouse.dto.domain.order.OrderStatusDTO;
 import com.itc.StockHouse.dto.domain.order.ProductDTO;
-import com.itc.StockHouse.exceptions.InsufficientRightsException;
+import com.itc.StockHouse.exceptions.AccessDeniedException;
 import com.itc.StockHouse.exceptions.ProductNotFoundException;
 import com.itc.StockHouse.exceptions.customer.CustomerNotFoundException;
 import com.itc.StockHouse.exceptions.order.*;
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
         if (!customer.getId().equals(order.getCustomer().getId())) {
-            throw new InsufficientRightsException();
+            throw new AccessDeniedException();
         }
 
         List<ProductDTO> products = orderedProductRepository.findByOrderId(id);
@@ -119,7 +119,7 @@ public class OrderServiceImpl implements OrderService {
 
 
         if (!customer.getId().equals(order.getCustomer().getId())) {
-            throw new InsufficientRightsException();
+            throw new AccessDeniedException();
         }
 
         if (order.getStatus() != OrderStatus.CREATED) {
@@ -167,7 +167,7 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
         if (!customer.getId().equals(order.getCustomer().getId())) {
-            throw new InsufficientRightsException();
+            throw new AccessDeniedException();
         }
 
         if (order.getStatus() != OrderStatus.CREATED) {
@@ -192,7 +192,7 @@ public class OrderServiceImpl implements OrderService {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
         if (!customer.getId().equals(order.getCustomer().getId())) {
-            throw new InsufficientRightsException();
+            throw new AccessDeniedException();
         }
         order.setStatus(OrderStatus.valueOf(orderStatusDTO.getCode()));
         orderRepository.save(order);
