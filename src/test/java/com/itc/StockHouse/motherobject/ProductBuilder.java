@@ -14,6 +14,8 @@ public class ProductBuilder {
     private static final String DEFAULT_DESCRIPTION = "LOREM IPSUM";
     private static final OffsetDateTime DEFAULT_UPDATE_TIME = OffsetDateTime.now();
     private static final OffsetDateTime DEFAULT_CREATE_TIME = OffsetDateTime.now();
+    private static final Boolean DEFAULT_IS_AVAILABLE = true;
+
 
     private String name = DEFAULT_NAME;
     private BigDecimal price = DEFAULT_PRICE;
@@ -23,6 +25,8 @@ public class ProductBuilder {
     private String description = DEFAULT_DESCRIPTION;
     private OffsetDateTime updateDate = DEFAULT_UPDATE_TIME;
     private OffsetDateTime creationDate = DEFAULT_CREATE_TIME;
+    private Boolean isAvailable = DEFAULT_IS_AVAILABLE;
+
 
     public ProductBuilder withName(String name) {
         this.name = name;
@@ -64,6 +68,11 @@ public class ProductBuilder {
         return this;
     }
 
+    public ProductBuilder withIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
+        return this;
+    }
+
     public ProductEntity build() {
         return ProductEntity.builder()
                 .name(name)
@@ -74,6 +83,7 @@ public class ProductBuilder {
                 .description(description)
                 .updateDate(updateDate)
                 .creationDate(creationDate)
+                .isAvailable(isAvailable)
                 .build();
     }
 

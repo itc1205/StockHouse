@@ -1,5 +1,6 @@
 package com.itc.StockHouse.motherobject;
 
+import com.itc.StockHouse.dto.domain.order.OrderDTO;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -16,9 +17,17 @@ public class MotherObject {
                 .withVendorCode(UUID.randomUUID().toString());
     }
 
+    public static CustomerBuilder aCustomerWithRandomLogin() {
+        return new CustomerBuilder().withLogin("Login#" + UUID.randomUUID());
+    }
+
     public static ProductBuilder aStockWithRandomName() {
         return new ProductBuilder()
                 .withName("Stock#" + UUID.randomUUID());
+    }
+
+    public static OrderBuilder aDefaultOrder() {
+        return new OrderBuilder();
     }
 }
 
