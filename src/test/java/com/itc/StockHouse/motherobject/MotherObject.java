@@ -5,7 +5,6 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Setter
-
 public class MotherObject {
     public static ProductBuilder aDefaultStock() {
         return new ProductBuilder();
@@ -19,6 +18,7 @@ public class MotherObject {
     public static CustomerBuilder aCustomerWithRandomLogin() {
         return new CustomerBuilder().withLogin("Login#" + UUID.randomUUID());
     }
+
 
     public static ProductBuilder aStockWithRandomName() {
         return new ProductBuilder()
