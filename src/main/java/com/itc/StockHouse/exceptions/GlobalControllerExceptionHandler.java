@@ -135,7 +135,7 @@ public class GlobalControllerExceptionHandler {
     public ErrorDTO handleOrderCantBeChanged(InsufficientProductsException ex) {
         return ErrorDTO.builder()
                 .timestamp(LocalDateTime.now())
-                .error("Order cannot be changed.")
+                .error("Insufficient amount of product.")
                 .build();
     }
 }
