@@ -1,22 +1,32 @@
 package com.itc.StockHouse.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.UUID;
+import java.util.Objects;
 
-@Embeddable
 @Getter
 @Setter
-@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@Embeddable
 public class OrderedProductKey implements Serializable {
-    @Column(name = "product_id")
-    private UUID productId;
+    private ProductEntity product;
+    private OrderEntity order;
 
-    @Column(name = "order_id")
-    private UUID orderId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderedProductKey that)) return false;
+        return Objects.equals(product, that.product) && Objects.equals(order, that.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(product, order);
+    }
 }

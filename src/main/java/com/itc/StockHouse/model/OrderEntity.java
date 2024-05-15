@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,11 +25,14 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+
     @ManyToOne
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.JOIN)
     private List<OrderedProductEntity> products;
 
     @Column(name = "status", nullable = false)
