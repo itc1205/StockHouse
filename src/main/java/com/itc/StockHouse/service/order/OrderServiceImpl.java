@@ -58,13 +58,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public UUID createOrder(Long customerId, OrderDTO order) {
+    public UUID createOrder(Long customerId, OrderDTO createOrderRequest) {
 
         CustomerEntity customerEntity = customerRepository.findById(customerId).orElseThrow(
                 CustomerNotFoundException::new
         );
 
-        Map<UUID, Integer> requestProducts = order.getProducts().stream().collect(
+        Map<UUID, Integer> requestProducts = createOrderRequest.getProducts().stream().collect(
                 Collectors.toMap(
                         ProductDTO::getProductId,
                         ProductDTO::getQuantity,
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
         );
 
         OrderEntity newOrder = OrderEntity.builder()
-                .deliveryAddress(order.getDeliveryAddress())
+                .deliveryAddress(createOrderRequest.getDeliveryAddress())
                 .status(OrderStatus.CREATED)
                 .customer(customerEntity)
                 .build();

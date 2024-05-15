@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface OrderService {
     OrderDTO getOrderById(Long customerId, UUID id);
 
-    UUID createOrder(Long customerId, OrderDTO order);
+    UUID createOrder(Long customerId, OrderDTO createOrderRequest);
 
     void addProductsToOrder(Long customerId, UUID id, List<ProductDTO> products);
 
