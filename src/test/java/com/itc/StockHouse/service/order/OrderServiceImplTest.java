@@ -2,7 +2,10 @@ package com.itc.StockHouse.service.order;
 
 import com.itc.StockHouse.dto.domain.order.OrderDTO;
 import com.itc.StockHouse.dto.domain.order.ProductDTO;
-import com.itc.StockHouse.model.*;
+import com.itc.StockHouse.model.CustomerEntity;
+import com.itc.StockHouse.model.OrderEntity;
+import com.itc.StockHouse.model.OrderedProductEntity;
+import com.itc.StockHouse.model.ProductEntity;
 import com.itc.StockHouse.motherobject.MotherObject;
 import com.itc.StockHouse.repository.CustomerRepository;
 import com.itc.StockHouse.repository.OrderRepository;

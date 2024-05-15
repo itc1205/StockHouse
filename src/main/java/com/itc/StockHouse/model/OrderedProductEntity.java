@@ -18,7 +18,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Getter
 @Setter

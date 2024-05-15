@@ -13,6 +13,8 @@ import java.util.UUID;
 public interface OrderedProductRepository extends JpaRepository<OrderedProductEntity, OrderedProductKey> {
     @Query("SELECT new com.itc.StockHouse.dto.domain.order.ProductDTO(op.product.id, p.name, op.quantity, op.price) FROM OrderedProductEntity op INNER JOIN ProductEntity p ON op.product.id=p.id WHERE op.order.id=?1")
     List<ProductDTO> findProjectionByOrderId(UUID orderId);
+
     Optional<OrderedProductEntity> findByOrder_Id(UUID orderId);
+
     Optional<OrderedProductEntity> findByProduct_Id(UUID productId);
 }

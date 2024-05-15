@@ -1,6 +1,5 @@
 package com.itc.StockHouse.motherobject;
 
-import com.itc.StockHouse.dto.domain.order.OrderDTO;
 import lombok.Setter;
 
 import java.util.UUID;
