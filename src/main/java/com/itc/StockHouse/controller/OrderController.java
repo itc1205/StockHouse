@@ -26,13 +26,11 @@ public class OrderController {
 
     @GetMapping("/{id}")
     OrderDTO getOrderById(@RequestHeader Long customerId, UUID orderId) {
-        CustomerDTO customerDTO = customerService.getCustomer(customerId);
-        return orderService.getOrderById(customerDTO, orderId);
+        return orderService.getOrderById(customerId, orderId);
     }
 
     @PostMapping("/")
     UUID createOrder(@RequestHeader Long customerId, @RequestBody CreateOrderSchema order) {
-        CustomerDTO customerDTO = customerService.getCustomer(customerId);
         OrderDTO orderDTO = OrderDTO.builder()
                 .deliveryAddress(order.getDeliveryAddress())
                 .products(order.getProducts()
@@ -43,30 +41,27 @@ public class OrderController {
                                 .build())
                         .toList())
                 .build();
-        return orderService.createOrder(customerDTO, orderDTO);
+        return orderService.createOrder(customerId, orderDTO);
     }
 
     @PatchMapping("/{orderId}")
     void updateOrder(@RequestHeader Long customerId, @RequestBody List<ProductSchema> products, @PathVariable UUID orderId) {
-        CustomerDTO customerDTO = customerService.getCustomer(customerId);
         List<ProductDTO> productDTOList = products.stream()
                 .map(productSchema -> ProductDTO.builder()
                         .productId(productSchema.getProductId())
                         .quantity(productSchema.getQuantity())
                         .build())
                 .toList();
-        orderService.addProductsToOrder(customerDTO, orderId, productDTOList);
+        orderService.addProductsToOrder(customerId, orderId, productDTOList);
     }
 
     @DeleteMapping("/{orderId}")
     void softDeleteOrder(@RequestHeader Long customerId, @PathVariable UUID orderId) {
-        CustomerDTO customerDTO = customerService.getCustomer(customerId);
-        orderService.softDeleteOrder(customerDTO, orderId);
+        orderService.softDeleteOrder(customerId, orderId);
     }
 
     @PatchMapping("/{orderId}/status")
     void updateOrderStatus(@RequestHeader Long customerId, @RequestBody SetOrderStatusSchema orderStatusSchema, @PathVariable UUID orderId) {
-        CustomerDTO customerDTO = customerService.getCustomer(customerId);
-        orderService.setStatus(customerDTO, orderStatusSchema.getStatus(), orderId);
+        orderService.setStatus(customerId, orderStatusSchema.getStatus(), orderId);
     }
 }
