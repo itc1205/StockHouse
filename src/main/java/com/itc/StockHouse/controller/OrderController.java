@@ -7,6 +7,7 @@ import com.itc.StockHouse.dto.schema.order.ProductSchema;
 import com.itc.StockHouse.dto.schema.order.SetOrderStatusSchema;
 import com.itc.StockHouse.service.customer.CustomerService;
 import com.itc.StockHouse.service.order.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,7 +68,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}/status")
-    void updateOrderStatus(@RequestHeader Long customerId, @RequestBody SetOrderStatusSchema orderStatusSchema, @PathVariable UUID orderId) {
+    void updateOrderStatus(@RequestHeader Long customerId, @RequestBody  @Valid SetOrderStatusSchema orderStatusSchema, @PathVariable UUID orderId) {
         orderService.setStatus(customerId, orderStatusSchema.getStatus(), orderId);
     }
 }
