@@ -138,4 +138,13 @@ public class GlobalControllerExceptionHandler {
                 .error("Insufficient amount of product.")
                 .build();
     }
+
+    @ExceptionHandler(ProductIsNotAvailableException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorDTO handleProductIsNotAvailable(ProductIsNotAvailableException ex) {
+        return ErrorDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .error("Some of the products are not available")
+                .build();
+    }
 }

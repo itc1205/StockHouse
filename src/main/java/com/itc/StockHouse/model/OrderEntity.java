@@ -37,13 +37,12 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-
     @ManyToOne
     @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(FetchMode.JOIN)
     private List<OrderedProductEntity> products;
 

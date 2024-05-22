@@ -4,12 +4,8 @@ import com.itc.StockHouse.dto.domain.order.OrderDTO;
 import com.itc.StockHouse.dto.domain.order.OrderStatusDTO;
 import com.itc.StockHouse.dto.domain.order.ProductDTO;
 import com.itc.StockHouse.exceptions.AccessDeniedException;
-import com.itc.StockHouse.exceptions.ProductNotFoundException;
 import com.itc.StockHouse.exceptions.customer.CustomerNotFoundException;
-import com.itc.StockHouse.exceptions.order.InsufficientProductsException;
-import com.itc.StockHouse.exceptions.order.OrderCantBeChangedException;
-import com.itc.StockHouse.exceptions.order.OrderCantBeDeletedException;
-import com.itc.StockHouse.exceptions.order.OrderNotFoundException;
+import com.itc.StockHouse.exceptions.order.*;
 import com.itc.StockHouse.model.CustomerEntity;
 import com.itc.StockHouse.model.OrderEntity;
 import com.itc.StockHouse.model.OrderStatus;
@@ -25,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,12 +56,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public UUID createOrder(Long customerId, OrderDTO createOrderRequest) {
-
+        // 1. Находим клиента
         CustomerEntity customerEntity = customerRepository.findById(customerId).orElseThrow(
                 CustomerNotFoundException::new
         );
 
-        Map<UUID, Integer> requestProducts = createOrderRequest.getProducts().stream().collect(
+        // 2. Создаем заказ
+        OrderEntity newOrder = OrderEntity.builder()
+                .deliveryAddress(createOrderRequest.getDeliveryAddress())
+                .status(OrderStatus.CREATED)
+                .customer(customerEntity)
+                .build();
+
+
+        // 3. Мапим продукты в мапу UUID-Integer
+        Map<UUID, Integer> requestProductQuantity = createOrderRequest.getProducts().stream().collect(
                 Collectors.toMap(
                         ProductDTO::getProductId,
                         ProductDTO::getQuantity,
@@ -72,21 +78,37 @@ public class OrderServiceImpl implements OrderService {
                 )
         );
 
-        OrderEntity newOrder = OrderEntity.builder()
-                .deliveryAddress(createOrderRequest.getDeliveryAddress())
-                .status(OrderStatus.CREATED)
-                .customer(customerEntity)
-                .build();
+        // 4. Делаем один запрос в бд для нахождения необходимых товаров
+        List<ProductEntity> productEntities = productRepository.findAllById(requestProductQuantity.keySet());
 
-        orderRepository.save(newOrder);
 
-        HashMap<UUID, Integer> insufficientItems = new HashMap<>();
-        List<OrderedProductEntity> orderedProductEntities = productRepository.streamAllByIds(requestProducts.keySet()).map(
+        // 5. Проверяем, есть ли все товары в базе данных
+        if (requestProductQuantity.keySet().size() != productEntities.size()) {
+
+            Set<UUID> foundIds = productEntities.stream()
+                    .map(ProductEntity::getId)
+                    .collect(Collectors.toSet());
+
+            Set<UUID> missingIds = requestProductQuantity.keySet().stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .collect(Collectors.toSet());
+
+            throw new ProductsNotFoundException(missingIds);
+        }
+
+
+        // 6. Создаем заказ на продукты
+        List<OrderedProductEntity> orderedProductEntities = productEntities.stream()
+                .map(
                         productEntity -> {
-                            Integer requestQuantity = requestProducts.get(productEntity.getId());
+                            Integer requestQuantity = requestProductQuantity.get(productEntity.getId());
+
+                            if (!productEntity.getIsAvailable()) {
+                                throw new ProductIsNotAvailableException(productEntity.getId());
+                            }
 
                             if (productEntity.getAmount() < requestQuantity) {
-                                insufficientItems.put(productEntity.getId(), productEntity.getAmount());
+                                throw new InsufficientProductsException(productEntity.getId(), productEntity.getAmount());
                             }
 
                             productEntity.setAmount(productEntity.getAmount() - requestQuantity);
@@ -98,38 +120,31 @@ public class OrderServiceImpl implements OrderService {
                                     .quantity(requestQuantity)
                                     .build();
                         })
-                .filter(Objects::nonNull)
-                .toList();
+                .collect(Collectors.toCollection(LinkedList::new));
 
-        if (!insufficientItems.isEmpty()) {
-            throw new InsufficientProductsException(insufficientItems);
-        }
-
-        if (orderedProductEntities.size() != requestProducts.keySet().size()) {
-            throw new ProductNotFoundException("Product not found");
-        }
-
-
-        orderedProductRepository.saveAll(orderedProductEntities);
-
-        return newOrder.getId();
+        newOrder.setProducts(orderedProductEntities);
+        return orderRepository.save(newOrder).getId();
     }
 
     @Override
     @Transactional
-    public void addProductsToOrder(Long customerId, UUID id, List<ProductDTO> products) {
+    public void addProductsToOrder(Long customerId, UUID orderId, List<ProductDTO> products) {
 
-        OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
+        // 1. Находим заказ
+        OrderEntity order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 
+        // 2. Проверяем, а тот ли клиент
         if (!customerId.equals(order.getCustomer().getId())) {
             throw new AccessDeniedException();
         }
 
+        // 3. Проверяем статус заказа
         if (order.getStatus() != OrderStatus.CREATED) {
             throw new OrderCantBeChangedException();
         }
 
-        Map<UUID, Integer> requestProducts = products.stream().collect(
+        // 3. Мапим продукты в мапу UUID-Integer
+        Map<UUID, Integer> requestProductQuantity = products.stream().collect(
                 Collectors.toMap(
                         ProductDTO::getProductId,
                         ProductDTO::getQuantity,
@@ -137,25 +152,54 @@ public class OrderServiceImpl implements OrderService {
                 )
         );
 
-        HashMap<UUID, Integer> insufficientItems = new HashMap<>();
-        List<OrderedProductEntity> orderedProductEntities = productRepository.streamAllByIds(requestProducts.keySet()).map(
+        // 4. Делаем один запрос в бд для нахождения необходимых товаров
+        List<ProductEntity> productEntities = productRepository.findAllById(requestProductQuantity.keySet());
+
+
+        // 5. Проверяем, есть ли все товары в базе данных
+        if (requestProductQuantity.keySet().size() != productEntities.size()) {
+
+            Set<UUID> foundIds = productEntities.stream()
+                    .map(ProductEntity::getId)
+                    .collect(Collectors.toSet());
+
+            Set<UUID> missingIds = requestProductQuantity.keySet().stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .collect(Collectors.toSet());
+
+            throw new ProductsNotFoundException(missingIds);
+        }
+
+        // 6. Получаем все товары, которые можно обновить
+        Map<UUID, OrderedProductEntity> alreadyOrderedProducts = order.getProducts()
+                .stream()
+                .collect(Collectors.toMap(orderedProduct -> orderedProduct.getProduct().getId(), Function.identity()));
+
+        List<OrderedProductEntity> orderedProductEntities = productRepository.streamAllByIds(requestProductQuantity.keySet()).map(
                         productEntity -> {
-                            Integer requestQuantity = requestProducts.get(productEntity.getId());
+                            Integer requestQuantity = requestProductQuantity.get(productEntity.getId());
+
                             if (productEntity.getAmount() < requestQuantity) {
-                                insufficientItems.put(productEntity.getId(), productEntity.getAmount());
+                                throw new InsufficientProductsException(productEntity.getId(), productEntity.getAmount());
                             }
 
-                            Optional<OrderedProductEntity> orderedProductFromRepo = orderedProductRepository.findByProduct_Id(productEntity.getId());
+                            if (!productEntity.getIsAvailable()) {
+                                throw new ProductIsNotAvailableException(productEntity.getId());
+                            }
 
-                            if (orderedProductFromRepo.isPresent()) {
-                                OrderedProductEntity existingOrder = orderedProductFromRepo.get();
+                            Optional<OrderedProductEntity> alreadyOrderedProduct = Optional.ofNullable(
+                                    alreadyOrderedProducts.getOrDefault(productEntity.getId(), null)
+                            );
+
+                            if (alreadyOrderedProduct.isPresent()) {
+                                OrderedProductEntity existingOrder = alreadyOrderedProduct.get();
                                 existingOrder.setPrice(productEntity.getPrice());
                                 existingOrder.setQuantity(existingOrder.getQuantity() + requestQuantity);
-                                orderedProductRepository.save(existingOrder);
-                                return null;
+                                return existingOrder;
                             }
 
                             productEntity.setAmount(productEntity.getAmount() - requestQuantity);
+
                             return OrderedProductEntity.builder()
                                     .price(productEntity.getPrice())
                                     .product(productEntity)
@@ -165,27 +209,15 @@ public class OrderServiceImpl implements OrderService {
                         })
                 .toList();
 
-        if (!insufficientItems.isEmpty()) {
-            throw new InsufficientProductsException(insufficientItems);
-        }
-
-        if (orderedProductEntities.size() != requestProducts.keySet().size()) {
-            throw new ProductNotFoundException("Product not found");
-        }
-
-        orderedProductRepository.saveAll(
-                orderedProductEntities.stream()
-                        .filter(Objects::nonNull)
-                        .toList()
-        );
+        order.getProducts().addAll(orderedProductEntities);
         orderRepository.save(order);
     }
 
 
     @Override
     @Transactional
-    public void softDeleteOrder(Long customerId, UUID id) {
-        OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
+    public void softDeleteOrder(Long customerId, UUID orderId) {
+        OrderEntity order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 
         if (!customerId.equals(order.getCustomer().getId())) {
             throw new AccessDeniedException();
@@ -198,7 +230,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderedProductEntity orderedProduct : order.getProducts()) {
             ProductEntity product = productRepository.findById(orderedProduct.getProduct().getId())
                     // This block should never be executed. In case it does, there is some major inconsistency errors with persistence
-                    .orElseThrow(() -> new RuntimeException("This is awfull. Product with id %s does not exist in 'product' table, however it is ordered.".formatted(
+                    .orElseThrow(() -> new RuntimeException("This is awful. Product with id %s does not exist in 'productId' table, however it is ordered.".formatted(
                             orderedProduct.getProduct().getId()
                     )));
             product.setAmount(product.getAmount() + orderedProduct.getQuantity());
