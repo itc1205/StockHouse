@@ -95,27 +95,16 @@ class OrderServiceImplTest {
                         anotherCustomer
                 )
         );
-        order.setProducts(new ArrayList<>(List.of(orderedProductWith200PriceAndAmountOf10)));
-        orderedProductWith200PriceAndAmountOf10.setOrder(order);
-
         orderRepository.save(order);
 
-        // Flush all the repositories, so the sql logs will be cleaner
-        orderRepository.flush();
-        customerRepository.flush();
-        productRepository.flush();
-        orderedProductRepository.flush();
+        orderedProductWith200PriceAndAmountOf10.setOrder(order);
+        orderedProductRepository.save(orderedProductWith200PriceAndAmountOf10);
         log.info("Test data initialised");
-
         orderService = new OrderServiceImpl(orderRepository, productRepository, customerRepository, orderedProductRepository);
     }
 
     @AfterEach
     void tearDown() {
-        orderRepository.flush();
-        customerRepository.flush();
-        productRepository.flush();
-        orderedProductRepository.flush();
         log.info("Finished test, cleaning up data");
         // Cleanup repos
         orderedProductRepository.deleteAll();
@@ -192,7 +181,7 @@ class OrderServiceImplTest {
                 order.getCustomer().getId(),
                 order.getId(),
                 Arrays.asList(
-                        // Add same productId
+                        // Add same product
                         ProductDTO.builder()
                                 .productId(productWith100PriceAndAmountOf50.getId())
                                 .quantity(10)
