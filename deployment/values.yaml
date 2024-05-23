@@ -1,0 +1,30 @@
+secret:
+  name: stock-house-secret
+deployment:
+  app:
+    image: itc1205/stock_house
+    port: 8080
+    replicas: 1
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: stock-house-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-stock-house-service
+    host: "postgresql-stock-house-service"
+    type: ClusterIP
+    port: 5432
+    username: username
+    password: password
+    sport: "5432"
+    dbname: db
+    dbschema: public
+ingress:
+  name: stock-house-ingress
+  host: itc.home
