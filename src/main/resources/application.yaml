@@ -17,3 +17,19 @@ app:
     exclusive_lock: false
     output_file: test.txt
     priceIncreasePercentage: 12.5
+
+rest:
+  account-service:
+    host: "localhost:8081"
+    methods:
+      get-account-numbers:
+        "/api/v1/account-numbers"
+    mock:
+      enabled: true
+  crm-service:
+    host: "localhost:8082"
+    methods:
+      get-inn:
+        "/api/v1/inn"
+    mock:
+      enabled: true
