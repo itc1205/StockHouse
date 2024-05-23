@@ -304,6 +304,7 @@ public class OrderServiceImpl implements OrderService {
                                             .build();
                                 },
                                 Collectors.toList()
-                        )));
+                        )
+                ));
     }
 }
