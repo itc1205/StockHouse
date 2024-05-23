@@ -4,11 +4,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public class InsufficientProductsException extends RuntimeException {
-    private final UUID productId;
-    private final Integer amount;
+    private final Map<UUID, Integer> ids;
 
-    public InsufficientProductsException(UUID productId, Integer amount) {
-        this.productId = productId;
-        this.amount = amount;
+    public InsufficientProductsException(Map<UUID, Integer> ids) {
+        this.ids = ids;
     }
 }

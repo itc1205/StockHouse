@@ -30,12 +30,14 @@ import java.math.BigDecimal;
 public class OrderedProductEntity {
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "order_id", insertable = false)
     private OrderEntity order;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "product_id", insertable = false)
     private ProductEntity product;
 
