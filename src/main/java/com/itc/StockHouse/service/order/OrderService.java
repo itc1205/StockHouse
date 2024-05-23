@@ -17,12 +17,8 @@ import java.util.UUID;
 
 public interface OrderService {
     OrderDTO getOrderById(CustomerDTO customer, UUID id) throws OrderNotFoundException, InsufficientRightsException;
-
     UUID createOrder(CustomerDTO customer, OrderDTO order) throws InsufficientProductsException, ProductNotFoundException, CustomerNotFoundException;
-
     void addProductsToOrder(CustomerDTO customer, UUID id, List<ProductDTO> products) throws InsufficientProductsException, OrderNotFoundException, ProductNotFoundException, InsufficientRightsException, OrderCantBeChangedException;
-
     void softDeleteOrder(CustomerDTO customer, UUID id) throws OrderCantBeDeletedException, OrderNotFoundException, InsufficientRightsException;
-
     void setStatus(CustomerDTO customerDTO, OrderStatusDTO orderStatusDTO, UUID id) throws OrderNotFoundException, InsufficientRightsException;
 }

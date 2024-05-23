@@ -21,5 +21,5 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID>, P
     Optional<ProductEntity> findByVendorCode(String vendorCode);
 
     @Query("SELECT p FROM ProductEntity p WHERE p.id IN ?1")
-    Stream<ProductEntity> streamAllByIds(Set<UUID> ids);
+    Stream<ProductEntity> streamAllByIds(Set<UUID>ids);
 }
