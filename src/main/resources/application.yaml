@@ -18,9 +18,10 @@ app:
     exclusive_lock: false
     output_file: test.txt
     priceIncreasePercentage: 12.5
-
-currency-service:
-  mode: "base" # none, base, mock
-  host: "http://localhost:8081" #хост второго сервиса
-  methods:
-    get-currency: "/api/v1/currency" #урл эндпоинта с курсами для GET запроса
+rest:
+  currency-service:
+    host: "http://localhost:8081"
+    methods:
+      get-currency: "/api/v1/currency"
+    mock:
+      enabled: true
