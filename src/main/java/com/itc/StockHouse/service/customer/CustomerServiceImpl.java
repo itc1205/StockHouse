@@ -15,7 +15,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository repository;
 
     @Override
-    public Long createCustomer(CustomerDTO customer) {
+    public Long createCustomer(CustomerDTO customer) throws CustomerAlreadyExistsException {
         if (repository.findByLogin(customer.getLogin()).isPresent()) {
             throw new CustomerAlreadyExistsException();
         }
@@ -30,7 +30,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO getCustomer(Long id) {
+    public CustomerDTO getCustomer(Long id) throws CustomerNotFoundException {
         CustomerEntity customer = repository.findById(id).orElseThrow(CustomerNotFoundException::new);
         return CustomerDTO.builder()
                 .id(customer.getId())

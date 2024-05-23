@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderedProductRepository orderedProductRepository;
 
     @Override
-    public OrderDTO getOrderById(CustomerDTO customer, UUID id) {
+    public OrderDTO getOrderById(CustomerDTO customer, UUID id) throws OrderNotFoundException, InsufficientRightsException {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
         if (!customer.getId().equals(order.getCustomer().getId())) {
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public UUID createOrder(CustomerDTO customer, OrderDTO order) {
+    public UUID createOrder(CustomerDTO customer, OrderDTO order) throws InsufficientProductsException, ProductNotFoundException, CustomerNotFoundException {
 
         CustomerEntity customerEntity = customerRepository.findById(customer.getId()).orElseThrow(
                 CustomerNotFoundException::new
@@ -113,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void addProductsToOrder(CustomerDTO customer, UUID id, List<ProductDTO> products) {
+    public void addProductsToOrder(CustomerDTO customer, UUID id, List<ProductDTO> products) throws InsufficientProductsException, OrderNotFoundException, InsufficientRightsException, OrderCantBeChangedException {
 
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void softDeleteOrder(CustomerDTO customer, UUID id) {
+    public void softDeleteOrder(CustomerDTO customer, UUID id) throws OrderCantBeDeletedException, OrderNotFoundException, InsufficientRightsException {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
         if (!customer.getId().equals(order.getCustomer().getId())) {
@@ -188,7 +188,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void setStatus(CustomerDTO customer, OrderStatusDTO orderStatusDTO, UUID id) {
+    public void setStatus(CustomerDTO customer, OrderStatusDTO orderStatusDTO, UUID id) throws OrderNotFoundException, InsufficientRightsException {
         OrderEntity order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
 
         if (!customer.getId().equals(order.getCustomer().getId())) {
