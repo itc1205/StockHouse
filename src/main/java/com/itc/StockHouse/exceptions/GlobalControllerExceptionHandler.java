@@ -68,9 +68,9 @@ public class GlobalControllerExceptionHandler {
                 .build();
     }
     // TODO: Improve exception handling
-    @ExceptionHandler(AccessDeniedException.class)
+    @ExceptionHandler(InsufficientRightsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorDTO handleInsufficientRights(AccessDeniedException ex) {
+    public ErrorDTO handleInsufficientRights(InsufficientRightsException ex) {
         return ErrorDTO.builder()
                 .timestamp(LocalDateTime.now())
                 .error("User does not have rights to access this resource.")
