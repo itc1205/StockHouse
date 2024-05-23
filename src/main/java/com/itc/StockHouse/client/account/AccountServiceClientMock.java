@@ -19,12 +19,11 @@ public class AccountServiceClientMock implements AccountServiceClient {
     public CompletableFuture<Map<String, String>> retrieveAccountNumbers(List<String> logins) {
         return CompletableFuture.supplyAsync(
                 () -> {
-                    long startTime = System.currentTimeMillis();
                     Map<String, String> inns = logins.stream().collect(Collectors.toMap(
                             Function.identity(), login -> "AccountNumber#" + login
                     ));
                     try {
-                        Thread.sleep(Duration.ofSeconds(3).toMillis() - (System.currentTimeMillis() - startTime));
+                        Thread.sleep(3000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
