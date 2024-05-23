@@ -1,5 +1,6 @@
 package com.itc.StockHouse.client.currency;
 
+import com.itc.StockHouse.dto.ExchangeRateDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -17,18 +19,17 @@ import java.util.Random;
 public class CurrencyServiceClientMock implements CurrencyServiceClient {
     private static final Random random = new Random();
 
-    private final HashMap<String, BigDecimal> currencies;
+    private final ExchangeRateDTO exchangeRates = new ExchangeRateDTO();
 
     CurrencyServiceClientMock() {
-        currencies = new HashMap<>();
-        currencies.put("CNY", BigDecimal.valueOf(random.nextFloat(100)));
-        currencies.put("USD", BigDecimal.valueOf(random.nextFloat(100)));
-        currencies.put("EUR", BigDecimal.valueOf(random.nextFloat(100)));
-        log.info("Initialised mock with currencies: {}", currencies);
+        exchangeRates.setCNY(BigDecimal.valueOf(20));
+        exchangeRates.setUSD(BigDecimal.valueOf(45));
+        exchangeRates.setEUR(BigDecimal.valueOf(100));
+        log.info("Initialised mock with currencies: {}", exchangeRates);
     }
 
     @Override
-    public HashMap<String, BigDecimal> retrieveCurrencies() {
-        return currencies;
+    public ExchangeRateDTO retrieveCurrencies() {
+        return exchangeRates;
     }
 }

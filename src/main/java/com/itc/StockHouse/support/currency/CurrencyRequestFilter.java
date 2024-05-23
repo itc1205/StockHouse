@@ -15,17 +15,14 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CurrencyRequestFilter extends OncePerRequestFilter {
 
-    private final CurrencySessionBean sessionCurrency;
+    private final CurrencyProvider currencyProvider;
 
     @Override
     protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
 
-        if (sessionCurrency.getCurrencyName() == null) {
-            sessionCurrency.setCurrencyName("RUB");
-        }
 
         if (request.getHeader("currency") != null) {
-            sessionCurrency.setCurrencyName(request.getHeader("currency"));
+            currencyProvider.setCurrency(Currency.valueOf(request.getHeader("currency")));
         }
 
         filterChain.doFilter(request, response);

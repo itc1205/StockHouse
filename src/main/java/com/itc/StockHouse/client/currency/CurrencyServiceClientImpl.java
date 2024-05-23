@@ -2,6 +2,7 @@ package com.itc.StockHouse.client.currency;
 
 import com.itc.StockHouse.configurations.CacheConfiguration;
 import com.itc.StockHouse.configurations.property.RestProperty;
+import com.itc.StockHouse.dto.ExchangeRateDTO;
 import com.itc.StockHouse.exceptions.CurrencyServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +28,13 @@ public class CurrencyServiceClientImpl implements CurrencyServiceClient {
 
     @Override
     @Cacheable(value = CacheConfiguration.currencyCacheName, unless = "#result == null")
-    public HashMap<String, BigDecimal> retrieveCurrencies() {
+    public ExchangeRateDTO retrieveCurrencies() {
         return currencyServiceWebClient.get()
                         .uri(getUriFromRestProperty())
                         .retrieve()
                         .onStatus(HttpStatusCode::is5xxServerError,
                                 clientResponse -> Mono.error(new CurrencyServiceException("Could not fetch currencies from service. Server returned status code: %s".formatted(clientResponse.statusCode()))))
-                        .bodyToMono(new ParameterizedTypeReference<HashMap<String, BigDecimal>>() {})
+                        .bodyToMono(ExchangeRateDTO.class)
                         .doOnError(throwable -> {
                             throw new CurrencyServiceException("Could not fetch currencies from service");
                         })
