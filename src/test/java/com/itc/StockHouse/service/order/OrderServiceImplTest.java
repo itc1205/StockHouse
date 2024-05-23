@@ -1,5 +1,7 @@
 package com.itc.StockHouse.service.order;
 
+import com.itc.StockHouse.client.account.AccountServiceClientMock;
+import com.itc.StockHouse.client.crm.CrmServiceClientMock;
 import com.itc.StockHouse.dto.domain.order.OrderDTO;
 import com.itc.StockHouse.dto.domain.order.ProductDTO;
 import com.itc.StockHouse.model.CustomerEntity;
@@ -107,7 +109,7 @@ class OrderServiceImplTest {
         orderedProductRepository.flush();
         log.info("Test data initialised");
 
-        orderService = new OrderServiceImpl(orderRepository, productRepository, customerRepository, orderedProductRepository);
+        orderService = new OrderServiceImpl(orderRepository, productRepository, customerRepository, orderedProductRepository, new CrmServiceClientMock(), new AccountServiceClientMock());
     }
 
     @AfterEach
@@ -205,5 +207,10 @@ class OrderServiceImplTest {
         assertEquals(1, orderFromService.getProducts().size());
         assertEquals(productWith100PriceAndAmountOf50.getId(), orderFromService.getProducts().get(0).getProductId());
         assertEquals(wantedQuantity, orderFromService.getProducts().get(0).getQuantity());
+    }
+
+    @Test
+    void givenExistingActiveOrdersComplete() {
+        log.info(orderService.getInfoAboutActiveOrders().toString());
     }
 }
