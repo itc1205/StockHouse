@@ -31,8 +31,8 @@ public class OrderedProductEntity {
     private ProductEntity product;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    BigDecimal price;
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    Integer quantity;
 }
