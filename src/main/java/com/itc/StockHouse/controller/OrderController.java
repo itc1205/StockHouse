@@ -5,6 +5,7 @@ import com.itc.StockHouse.dto.domain.order.ProductDTO;
 import com.itc.StockHouse.dto.schema.order.CreateOrderSchema;
 import com.itc.StockHouse.dto.schema.order.ProductSchema;
 import com.itc.StockHouse.dto.schema.order.SetOrderStatusSchema;
+import com.itc.StockHouse.service.customer.CustomerService;
 import com.itc.StockHouse.service.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
