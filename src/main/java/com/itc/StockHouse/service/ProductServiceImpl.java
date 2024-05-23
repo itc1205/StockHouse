@@ -17,7 +17,6 @@ import java.util.UUID;
 /**
  * Реализация сервиса по управлению товарами на складе {@link ProductService}
  */
-// TODO: Rewrite with usage of domain-level DTO's
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -32,8 +31,6 @@ public class ProductServiceImpl implements ProductService {
             );
         }
         product.setUpdateDate(OffsetDateTime.now());
-        // TODO: Remove this hardcoded default value
-        product.setIsAvailable(true);
         return repository.save(product);
     }
 
