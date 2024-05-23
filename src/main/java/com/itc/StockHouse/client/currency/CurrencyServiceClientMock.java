@@ -2,6 +2,8 @@ package com.itc.StockHouse.client.currency;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -10,7 +12,8 @@ import java.util.Random;
 
 @Component
 @Slf4j
-@ConditionalOnExpression(value = "#{'${currency-service.mode:none}'.equals('mock')}")
+@Primary
+@ConditionalOnProperty(name = "rest.currency-service.mock.enabled", matchIfMissing = false)
 public class CurrencyServiceClientMock implements CurrencyServiceClient {
     private static final Random random = new Random();
 
