@@ -1,5 +1,6 @@
 package com.itc.StockHouse.client.account;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Primary
+@ConditionalOnProperty(name = "rest.account-service.mock.enabled", matchIfMissing = false)
 public class AccountServiceClientMock implements AccountServiceClient {
     @Override
     public CompletableFuture<Map<String, String>> retrieveAccountNumbers(List<String> logins) {

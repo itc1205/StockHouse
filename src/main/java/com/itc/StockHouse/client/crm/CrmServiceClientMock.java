@@ -1,5 +1,6 @@
 package com.itc.StockHouse.client.crm;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Primary
+@ConditionalOnProperty(name = "rest.crm-service.mock.enabled", matchIfMissing = false)
 public class CrmServiceClientMock implements CrmServiceClient {
     @Override
     public CompletableFuture<Map<String, String>> retrieveInns(List<String> logins) {
