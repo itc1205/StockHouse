@@ -5,8 +5,4 @@
     <include file="changelog/000-initial-schema.xml" relativeToChangelogFile="true"/>
     <include file="changelog/001-insert-records.xml" relativeToChangelogFile="true"/>
     <include file="changelog/002-rename-from-stock-to-product.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/003-add-is-available-column-to-product.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/004-create-customer-table.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/005-create-orders-table.xml" relativeToChangelogFile="true"/>
-    <include file="changelog/006-create-ordered-product-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
