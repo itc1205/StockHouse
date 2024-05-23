@@ -7,5 +7,5 @@ import java.util.HashMap;
 @Data
 public class ClientProperty {
     String host;
-    HashMap<String, String> endpoints;
+    HashMap<String, String> methods;
 }

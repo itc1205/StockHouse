@@ -6,16 +6,11 @@ import com.itc.StockHouse.dto.ExchangeRateDTO;
 import com.itc.StockHouse.exceptions.CurrencyServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -43,6 +38,6 @@ public class CurrencyServiceClientImpl implements CurrencyServiceClient {
     }
 
     private String getUriFromRestProperty() {
-        return restProperty.getCurrencyService().getEndpoints().get("get-currency");
+        return restProperty.getCurrencyService().getMethods().get("get-currency");
     }
 }
