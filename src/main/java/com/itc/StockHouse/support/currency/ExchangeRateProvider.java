@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class ExchangeRateProvider {
-    private final JsonMapper objectMapper;
+    private static final JsonMapper objectMapper = new JsonMapper();
 
     private final CurrencyServiceClient currencyServiceClient;
 
