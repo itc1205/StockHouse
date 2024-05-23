@@ -7,6 +7,9 @@ import com.itc.StockHouse.dto.UpdateProductDto;
 import com.itc.StockHouse.exceptions.ProductVendorCodeAlreadyExistsException;
 import com.itc.StockHouse.exceptions.ProductNotFoundException;
 import com.itc.StockHouse.service.ProductService;
+import com.itc.StockHouse.support.currency.Currency;
+import com.itc.StockHouse.support.currency.CurrencyProvider;
+import com.itc.StockHouse.support.currency.ExchangeRateProvider;
 import com.itc.StockHouse.utils.ProductMappingUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,6 +36,10 @@ public class ProductController {
 
     private final ProductMappingUtils utils;
 
+    private final CurrencyProvider currencyProvider;
+
+    private final ExchangeRateProvider exchangeRateProvider;
+
     @Operation(summary = "Операция создания товара на складе")
     @PostMapping("/")
     public ProductDto createProduct(@RequestBody CreateProductDto createProductDto) throws ProductVendorCodeAlreadyExistsException {
@@ -45,9 +53,16 @@ public class ProductController {
     @Operation(summary = "Операция получения информации о товаре на складе")
     @GetMapping("/{id}")
     public ProductDto getProductByID(@PathVariable("id") UUID id) throws ProductNotFoundException {
-        return utils.mapToProductDto(
+        ProductDto productDto = utils.mapToProductDto(
                 productService.getProductByUUID(id)
         );
+
+        Currency currency = currencyProvider.getCurrency();
+        productDto.setCurrency(currency.toString());
+        BigDecimal priceWithCurrency = productDto.getPrice().multiply(exchangeRateProvider.getExchangeRate(currency));
+        productDto.setPrice(priceWithCurrency);
+
+        return productDto;
     }
 
     @Operation(summary = "Операция получения всех товаров на складе")
@@ -56,6 +71,12 @@ public class ProductController {
         return productService.getAll(pageable)
                 .stream()
                 .map(utils::mapToProductDto)
+                .peek(productDto -> {
+                    Currency currency = currencyProvider.getCurrency();
+                    productDto.setCurrency(currency.toString());
+                    BigDecimal priceWithCurrency = productDto.getPrice().multiply(exchangeRateProvider.getExchangeRate(currency));
+                    productDto.setPrice(priceWithCurrency);
+                })
                 .collect(Collectors.toList());
     }
 
