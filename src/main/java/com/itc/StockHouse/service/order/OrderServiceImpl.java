@@ -2,7 +2,6 @@ package com.itc.StockHouse.service.order;
 
 import com.itc.StockHouse.client.account.AccountServiceClient;
 import com.itc.StockHouse.client.crm.CrmServiceClient;
-import com.itc.StockHouse.client.crm.CrmServiceClientMock;
 import com.itc.StockHouse.dto.domain.customer.CustomerInfoDTO;
 import com.itc.StockHouse.dto.domain.order.OrderDTO;
 import com.itc.StockHouse.dto.domain.order.OrderInfoDTO;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
