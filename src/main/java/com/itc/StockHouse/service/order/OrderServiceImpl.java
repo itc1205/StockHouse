@@ -6,10 +6,7 @@ import com.itc.StockHouse.dto.domain.order.ProductDTO;
 import com.itc.StockHouse.exceptions.AccessDeniedException;
 import com.itc.StockHouse.exceptions.ProductNotFoundException;
 import com.itc.StockHouse.exceptions.customer.CustomerNotFoundException;
-import com.itc.StockHouse.exceptions.order.InsufficientProductsException;
-import com.itc.StockHouse.exceptions.order.OrderCantBeChangedException;
-import com.itc.StockHouse.exceptions.order.OrderCantBeDeletedException;
-import com.itc.StockHouse.exceptions.order.OrderNotFoundException;
+import com.itc.StockHouse.exceptions.order.*;
 import com.itc.StockHouse.model.CustomerEntity;
 import com.itc.StockHouse.model.OrderEntity;
 import com.itc.StockHouse.model.OrderStatus;
@@ -82,22 +79,22 @@ public class OrderServiceImpl implements OrderService {
 
         HashMap<UUID, Integer> insufficientItems = new HashMap<>();
         List<OrderedProductEntity> orderedProductEntities = productRepository.streamAllByIds(requestProducts.keySet()).map(
-                        productEntity -> {
-                            Integer requestQuantity = requestProducts.get(productEntity.getId());
+                productEntity -> {
+                    Integer requestQuantity = requestProducts.get(productEntity.getId());
 
-                            if (productEntity.getAmount() < requestQuantity) {
-                                insufficientItems.put(productEntity.getId(), productEntity.getAmount());
-                            }
+                    if (productEntity.getAmount() < requestQuantity) {
+                        insufficientItems.put(productEntity.getId(), productEntity.getAmount());
+                    }
 
-                            productEntity.setAmount(productEntity.getAmount() - requestQuantity);
+                    productEntity.setAmount(productEntity.getAmount() - requestQuantity);
 
-                            return OrderedProductEntity.builder()
-                                    .price(productEntity.getPrice())
-                                    .product(productEntity)
-                                    .order(newOrder)
-                                    .quantity(requestQuantity)
-                                    .build();
-                        })
+                    return OrderedProductEntity.builder()
+                            .price(productEntity.getPrice())
+                            .product(productEntity)
+                            .order(newOrder)
+                            .quantity(requestQuantity)
+                            .build();
+                })
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -139,30 +136,30 @@ public class OrderServiceImpl implements OrderService {
 
         HashMap<UUID, Integer> insufficientItems = new HashMap<>();
         List<OrderedProductEntity> orderedProductEntities = productRepository.streamAllByIds(requestProducts.keySet()).map(
-                        productEntity -> {
-                            Integer requestQuantity = requestProducts.get(productEntity.getId());
-                            if (productEntity.getAmount() < requestQuantity) {
-                                insufficientItems.put(productEntity.getId(), productEntity.getAmount());
-                            }
+                productEntity -> {
+                    Integer requestQuantity = requestProducts.get(productEntity.getId());
+                    if (productEntity.getAmount() < requestQuantity) {
+                        insufficientItems.put(productEntity.getId(), productEntity.getAmount());
+                    }
 
-                            Optional<OrderedProductEntity> orderedProductFromRepo = orderedProductRepository.findByProduct_Id(productEntity.getId());
+                    Optional<OrderedProductEntity> orderedProductFromRepo = orderedProductRepository.findByProduct_Id(productEntity.getId());
 
-                            if (orderedProductFromRepo.isPresent()) {
-                                OrderedProductEntity existingOrder = orderedProductFromRepo.get();
-                                existingOrder.setPrice(productEntity.getPrice());
-                                existingOrder.setQuantity(existingOrder.getQuantity() + requestQuantity);
-                                orderedProductRepository.save(existingOrder);
-                                return null;
-                            }
+                    if (orderedProductFromRepo.isPresent()) {
+                        OrderedProductEntity existingOrder = orderedProductFromRepo.get();
+                        existingOrder.setPrice(productEntity.getPrice());
+                        existingOrder.setQuantity(existingOrder.getQuantity() + requestQuantity);
+                        orderedProductRepository.save(existingOrder);
+                        return null;
+                    }
 
-                            productEntity.setAmount(productEntity.getAmount() - requestQuantity);
-                            return OrderedProductEntity.builder()
-                                    .price(productEntity.getPrice())
-                                    .product(productEntity)
-                                    .order(order)
-                                    .quantity(requestQuantity)
-                                    .build();
-                        })
+                    productEntity.setAmount(productEntity.getAmount() - requestQuantity);
+                    return OrderedProductEntity.builder()
+                            .price(productEntity.getPrice())
+                            .product(productEntity)
+                            .order(order)
+                            .quantity(requestQuantity)
+                            .build();
+                })
                 .toList();
 
         if (!insufficientItems.isEmpty()) {
