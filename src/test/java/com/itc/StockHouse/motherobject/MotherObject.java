@@ -5,7 +5,6 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Setter
-
 public class MotherObject {
     public static ProductBuilder aDefaultStock() {
         return new ProductBuilder();
@@ -16,9 +15,18 @@ public class MotherObject {
                 .withVendorCode(UUID.randomUUID().toString());
     }
 
+    public static CustomerBuilder aCustomerWithRandomLogin() {
+        return new CustomerBuilder().withLogin("Login#" + UUID.randomUUID());
+    }
+
+
     public static ProductBuilder aStockWithRandomName() {
         return new ProductBuilder()
                 .withName("Stock#" + UUID.randomUUID());
+    }
+
+    public static OrderBuilder aDefaultOrder() {
+        return new OrderBuilder();
     }
 }
 
