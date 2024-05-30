@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.name" . }}-deployment
+  namespace: stock-house
+  labels:
+    app: {{ include "chart.name" . }}-app
+spec:
+  replicas: {{ .Values.deployment.app.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "chart.name" . }}-app
+  template:
+    metadata:
+      labels:
+        app: {{ include "chart.name" . }}-app
+    spec:
+      containers:
+        - name: {{ include "chart.name" . }}-app
+          image: {{ .Values.deployment.app.image }}
+          ports:
+            - name: web
+              containerPort: {{ .Values.deployment.app.port }}
+#            - name: actuator
+#              containerPort: {{ .Values.deployment.app.port }}
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.deployment.app.port }}
+              path: /actuator/health
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.deployment.app.port }}
+              path: /actuator/health
+            initialDelaySeconds: 90
+            periodSeconds: 10
+          env:
+            - name: POSTGRES_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_PORT
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_HOST
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_PASSWORD
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "chart.name" . }}-postgresql-deployment
+  namespace: stock-house
+spec:
+  serviceName: "postgres"
+  replicas: {{ .Values.deployment.db.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "chart.name" . }}-postgresql
+  template:
+    metadata:
+      labels:
+        app: {{ include "chart.name" . }}-postgresql
+    spec:
+      containers:
+        - name: postgres
+          image: {{ .Values.deployment.db.image }}
+          ports:
+            - containerPort: {{ .Values.deployment.db.port }}
+              name: postgredb
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: postgredb
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+  volumeClaimTemplates:
+    - metadata:
+        name: postgredb
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 1Gi
