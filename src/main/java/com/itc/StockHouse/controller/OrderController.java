@@ -67,7 +67,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}/status")
-    void updateOrderStatus(@RequestHeader Long customerId, @RequestBody  @Valid SetOrderStatusSchema orderStatusSchema, @PathVariable UUID orderId) {
-        orderService.setStatus(customerId, orderStatusSchema.getStatus(), orderId);
+    void updateOrderStatus(@RequestBody  @Valid SetOrderStatusSchema orderStatusSchema, @PathVariable UUID orderId) {
+        orderService.setStatus(orderStatusSchema.getStatus(), orderId);
     }
 }
