@@ -23,7 +23,7 @@ public class Consumer {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = "${app.kafka.topic-name}", containerFactory = "kafkaListenerContainerFactoryByteArray")
-    public void listenGroupTopic(byte[] message) throws IOException {
+    public void listenGroupTopic(byte[] message) {
         log.info("Received message %s".formatted(Arrays.toString(message)));
         try {
             final KafkaEvent event = objectMapper.readValue(message, KafkaEvent.class);
