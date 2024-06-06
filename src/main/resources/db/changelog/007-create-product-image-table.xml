@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="007-create-ordered-product" author="Ivan Aksenov">
+        <createTable tableName="product_image">
+            <column name="s3_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="uuid">
+                <constraints primaryKey="true" foreignKeyName="fk_product_image_product_id" nullable="false" references="product(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

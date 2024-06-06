@@ -10,6 +10,9 @@ services:
       POSTGRES_HOST: database
       POSTGRES_PORT: 5432
       POSTGRES_DB: stockhouse_db
+      S3_BUCKET_NAME: stockhouse-bucket
+      S3_URL: localstack
+      S3_PORT: 4566
     ports:
       - "9999:8080"
     depends_on:
@@ -82,5 +85,23 @@ services:
       - "9092:9092"
       - "9091:9091"
       - "9101:9101"
+
+
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+      # Used inside localstack-script.sh
+      - DEFAULT_BUCKET_NAME=stockhouse-bucket
+    volumes:
+      - ./localstack-script.sh:/etc/localstack/init/ready.d/script.sh
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
 volumes:
   pg-data:

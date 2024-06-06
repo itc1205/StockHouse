@@ -23,8 +23,12 @@ app:
     partitions: 2
     bootstrap_address: "localhost:9091"
     groupId: "idk"
-    enabled: true
-
+    enabled: false
+  s3:
+    bucket_name: ${S3_BUCKET_NAME:stockhouse-bucket}
+    url: "http://${S3_HOST:localhost}:${S3_PORT:4566}"
+    accessKeyId: "stockhouse-accesskey-id"
+    secretAccessKey: "stockhouse-secret-key"
 rest:
   currency-service:
     host: "http://localhost:8081"
