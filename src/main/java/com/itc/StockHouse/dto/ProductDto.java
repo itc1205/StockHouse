@@ -50,5 +50,7 @@ public class ProductDto {
      * Время и дата создания товара
      */
     private OffsetDateTime creationDate;
+
+    private String currency;
 }
 

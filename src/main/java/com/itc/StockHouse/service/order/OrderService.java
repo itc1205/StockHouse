@@ -18,7 +18,7 @@ public interface OrderService {
 
     void softDeleteOrder(Long customerId, UUID id);
 
-    void setStatus(Long customerId, OrderStatusDTO orderStatusDTO, UUID orderId);
+    void setStatus(OrderStatusDTO orderStatusDTO, UUID orderId);
 
     Map<UUID, List<OrderInfoDTO>> getInfoAboutActiveOrders();
 }

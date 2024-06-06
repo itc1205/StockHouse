@@ -12,12 +12,17 @@ public class WebClientConfiguration {
     private final RestProperty restProperty;
 
     @Bean
+    public WebClient currencyServiceWebClient() {
+        return WebClient.builder()
+                .baseUrl(restProperty.getCurrencyService().getHost())
+                .build();
+    }
+    @Bean
     public WebClient accountServiceWebClient() {
         return WebClient.builder()
                 .baseUrl(restProperty.getAccountService().getHost())
                 .build();
     }
-
     @Bean
     public WebClient crmServiceWebClient() {
         return WebClient.builder()

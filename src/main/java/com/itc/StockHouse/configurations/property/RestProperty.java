@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "rest")
 @Component
 public class RestProperty {
+    ClientProperty currencyService;
     ClientProperty accountService;
     ClientProperty crmService;
 }

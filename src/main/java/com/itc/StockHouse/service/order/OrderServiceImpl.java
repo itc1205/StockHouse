@@ -250,12 +250,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void setStatus(Long customer, OrderStatusDTO orderStatusDTO, UUID orderId) {
+    public void setStatus(OrderStatusDTO orderStatusDTO, UUID orderId) {
         OrderEntity order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 
-        if (!customer.equals(order.getCustomer().getId())) {
-            throw new AccessDeniedException();
-        }
         order.setStatus(OrderStatus.valueOf(orderStatusDTO.getCode()));
         orderRepository.save(order);
     }

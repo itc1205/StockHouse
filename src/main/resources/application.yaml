@@ -17,8 +17,13 @@ app:
     exclusive_lock: false
     output_file: test.txt
     priceIncreasePercentage: 12.5
-
 rest:
+  currency-service:
+    host: "http://localhost:8081"
+    methods:
+      get-currency: "/api/v1/currency"
+    mock:
+      enabled: true
   account-service:
     host: "localhost:8081"
     methods:
