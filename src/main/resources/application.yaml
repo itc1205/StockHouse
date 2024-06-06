@@ -6,17 +6,25 @@ spring:
   batch:
     job:
       enabled: false
+
 springdoc:
   api-docs:
     path: "/api-docs"
 
 app:
   scheduling:
-    mode: simple # none, simple, optimised, batch
+    mode: none # none, simple, optimised, batch
     delay: 600000 #ms
     exclusive_lock: false
     output_file: test.txt
     priceIncreasePercentage: 12.5
+  kafka:
+    topic_name: "test_topic"
+    partitions: 2
+    bootstrap_address: "localhost:9091"
+    groupId: "idk"
+    enabled: true
+
 rest:
   currency-service:
     host: "http://localhost:8081"
