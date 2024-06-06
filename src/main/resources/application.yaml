@@ -24,7 +24,9 @@ app:
     bootstrap_address: "localhost:9091"
     groupId: "idk"
     enabled: true
-
+  s3:
+    bucket_name: ${S3_BUCKET_NAME:stockhouse-bucket}
+    url: "${S3_HOST:localhost}:${S3_PORT:4566}"
 rest:
   currency-service:
     host: "http://localhost:8081"
