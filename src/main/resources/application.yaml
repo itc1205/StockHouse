@@ -18,10 +18,31 @@ app:
     exclusive_lock: false
     output_file: test.txt
     priceIncreasePercentage: 12.5
+  kafka:
+    topic_name: "test_topic"
+    partitions: 2
+    bootstrap_address: "localhost:9091"
+    groupId: "idk"
+    enabled: true
+
 rest:
   currency-service:
     host: "http://localhost:8081"
     methods:
       get-currency: "/api/v1/currency"
+    mock:
+      enabled: true
+  account-service:
+    host: "localhost:8081"
+    methods:
+      get-account-numbers:
+        "/api/v1/account-numbers"
+    mock:
+      enabled: true
+  crm-service:
+    host: "localhost:8082"
+    methods:
+      get-inn:
+        "/api/v1/inn"
     mock:
       enabled: true
