@@ -1,0 +1,11 @@
+apiVersion: v2
+name: stock-house
+version: 1.0.0
+description: StockHouse application
+type: application
+sources:
+  - https://github.com/itc1205/StockHouse
+maintainers:
+  - name: Ivan Aksenov
+    email: pikhiy1205@gmail.com
+appVersion: 1.0.0

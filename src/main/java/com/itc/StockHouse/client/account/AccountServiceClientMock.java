@@ -1,0 +1,34 @@
+package com.itc.StockHouse.client.account;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@Component
+@Primary
+@ConditionalOnProperty(name = "rest.account-service.mock.enabled", matchIfMissing = false)
+public class AccountServiceClientMock implements AccountServiceClient {
+    @Override
+    public CompletableFuture<Map<String, String>> retrieveAccountNumbers(List<String> logins) {
+        return CompletableFuture.supplyAsync(
+                () -> {
+                    Map<String, String> inns = logins.stream().collect(Collectors.toMap(
+                            Function.identity(), login -> "AccountNumber#" + login
+                    ));
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return inns;
+                }
+        );
+    }
+}

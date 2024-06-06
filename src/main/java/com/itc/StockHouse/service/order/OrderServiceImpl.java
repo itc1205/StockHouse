@@ -1,6 +1,10 @@
 package com.itc.StockHouse.service.order;
 
+import com.itc.StockHouse.client.account.AccountServiceClient;
+import com.itc.StockHouse.client.crm.CrmServiceClient;
+import com.itc.StockHouse.dto.domain.customer.CustomerInfoDTO;
 import com.itc.StockHouse.dto.domain.order.OrderDTO;
+import com.itc.StockHouse.dto.domain.order.OrderInfoDTO;
 import com.itc.StockHouse.dto.domain.order.OrderStatusDTO;
 import com.itc.StockHouse.dto.domain.order.ProductDTO;
 import com.itc.StockHouse.exceptions.AccessDeniedException;
@@ -16,11 +20,13 @@ import com.itc.StockHouse.repository.OrderRepository;
 import com.itc.StockHouse.repository.OrderedProductRepository;
 import com.itc.StockHouse.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
     private final OrderedProductRepository orderedProductRepository;
+
+    private final CrmServiceClient crmServiceClient;
+    private final AccountServiceClient accountServiceClient;
 
     @Override
     public OrderDTO getOrderById(Long customerId, UUID id) {
@@ -246,5 +255,53 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(OrderStatus.valueOf(orderStatusDTO.getCode()));
         orderRepository.save(order);
+    }
+
+    @SneakyThrows
+    @Override
+    public Map<UUID, List<OrderInfoDTO>> getInfoAboutActiveOrders() {
+        // 1. Find all orders with status CREATED or CONFIRMED
+        List<OrderEntity> orders = orderRepository.findAllActiveOrders();
+        // 2. Collect all unique logins
+        Set<String> logins = orders.stream()
+                .map(orderEntity -> orderEntity.getCustomer().getLogin())
+                .collect(Collectors.toSet());
+
+
+        // Ask services for client data
+        CompletableFuture<Map<String, String>> crmFuture = crmServiceClient.retrieveInns(logins.stream().toList());
+        CompletableFuture<Map<String, String>> accountServiceFuture = accountServiceClient.retrieveAccountNumbers(logins.stream().toList());
+
+        // Wait until both tasks complete
+        CompletableFuture.allOf(crmFuture, accountServiceFuture).join();
+
+        Map<String, String> loginInn = crmFuture.get();
+        Map<String, String> loginAccountNumber = accountServiceFuture.get();
+
+        return orders.stream()
+                .flatMap(orderEntity -> orderEntity.getProducts().stream())
+                .collect(Collectors.groupingBy(
+                        orderedProduct -> orderedProduct.getProduct().getId(),
+                        Collectors.mapping(
+                                orderedProduct -> {
+                                    CustomerEntity customer = orderedProduct.getOrder().getCustomer();
+                                    return OrderInfoDTO.builder()
+                                            .id(orderedProduct.getOrder().getId())
+                                            .deliveryAddress(orderedProduct.getOrder().getDeliveryAddress())
+                                            .quantity(orderedProduct.getQuantity())
+                                            .status(orderedProduct.getOrder().getStatus())
+                                            .customer(
+                                                    CustomerInfoDTO.builder()
+                                                            .id(customer.getId())
+                                                            .email(customer.getEmail())
+                                                            .inn(loginInn.get(customer.getLogin()))
+                                                            .accountNumber(loginAccountNumber.get(customer.getLogin()))
+                                                            .build()
+                                            )
+                                            .build();
+                                },
+                                Collectors.toList()
+                        )
+                ));
     }
 }

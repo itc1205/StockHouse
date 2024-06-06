@@ -9,4 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestProperty {
     ClientProperty currencyService;
+    ClientProperty accountService;
+    ClientProperty crmService;
 }

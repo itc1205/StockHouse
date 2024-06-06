@@ -1,10 +1,12 @@
 package com.itc.StockHouse.service.order;
 
 import com.itc.StockHouse.dto.domain.order.OrderDTO;
+import com.itc.StockHouse.dto.domain.order.OrderInfoDTO;
 import com.itc.StockHouse.dto.domain.order.OrderStatusDTO;
 import com.itc.StockHouse.dto.domain.order.ProductDTO;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface OrderService {
@@ -17,4 +19,6 @@ public interface OrderService {
     void softDeleteOrder(Long customerId, UUID id);
 
     void setStatus(OrderStatusDTO orderStatusDTO, UUID orderId);
+
+    Map<UUID, List<OrderInfoDTO>> getInfoAboutActiveOrders();
 }
