@@ -25,7 +25,7 @@ import java.util.zip.ZipOutputStream;
 @RequiredArgsConstructor
 public class S3ImageClientImpl implements S3ImageClient {
 
-    private static final String fileNameMetadata = "x-amz-meta-fileName";
+    private static final String fileNameMetadata = "filename";
 
     private final S3Property s3Property;
     private final S3Client s3Client;
@@ -37,7 +37,7 @@ public class S3ImageClientImpl implements S3ImageClient {
         UUID imageId = UUID.randomUUID();
 
         Map<String, String> metadata = new HashMap<>() {{
-           put("x-amz-meta-fileName", file.getName());
+           put("x-amz-meta-" + fileNameMetadata, file.getOriginalFilename());
         }};
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -62,12 +62,10 @@ public class S3ImageClientImpl implements S3ImageClient {
         try {
             for (UUID uuid : uuidList) {
 
-
                 GetObjectRequest request = GetObjectRequest.builder()
                         .key(uuid.toString())
                         .bucket(s3Property.getBucketName())
                         .build();
-
                 ResponseBytes<GetObjectResponse> responseBytes = s3Client.getObjectAsBytes(request);
 
                 ZipEntry zipEntry = new ZipEntry(responseBytes.response().metadata().get(fileNameMetadata));

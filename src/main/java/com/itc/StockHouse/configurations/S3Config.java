@@ -33,6 +33,7 @@ public class S3Config {
                 .credentialsProvider(StaticCredentialsProvider.create(
                         credentials
                 ))
+                .forcePathStyle(true)
                 .region(region)
                 .build();
     }

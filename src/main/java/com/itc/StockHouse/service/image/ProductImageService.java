@@ -28,7 +28,7 @@ public class ProductImageService {
                 .orElseThrow(() -> new ProductNotFoundException("Product with uuid: %s not found".formatted(productId)));
 
         UUID imageId = s3ImageClient.uploadImage(image);
-        imageRepository.save(new ProductImageEntity(productId, imageId));
+        imageRepository.save(new ProductImageEntity(imageId, productId));
     }
 
     public ByteArrayOutputStream getImages(UUID productId) {
