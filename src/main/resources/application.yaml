@@ -6,13 +6,14 @@ spring:
   batch:
     job:
       enabled: false
+
 springdoc:
   api-docs:
     path: "/api-docs"
 
 app:
   scheduling:
-    mode: simple # none, simple, optimised, batch
+    mode: none # none, simple, optimised, batch
     delay: 600000 #ms
     exclusive_lock: false
     output_file: test.txt
@@ -25,6 +26,12 @@ app:
     enabled: true
 
 rest:
+  currency-service:
+    host: "http://localhost:8081"
+    methods:
+      get-currency: "/api/v1/currency"
+    mock:
+      enabled: true
   account-service:
     host: "localhost:8081"
     methods:
